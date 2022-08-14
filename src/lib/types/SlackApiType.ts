@@ -1,4 +1,3 @@
-// こちらを import して使う
 export const SlackApiType = {
   Channels: 'conversations.list',
   Members: 'users.list',
@@ -6,5 +5,5 @@ export const SlackApiType = {
   Replies: 'conversations.replies',
 } as const;
 
-// こちらは定義するだけで使わない
-export type SLACK_API_TYPE = typeof SlackApiType[keyof typeof SlackApiType];
+// eslint-disable-next-line no-redeclare
+export type SlackApiType = typeof SlackApiType[keyof typeof SlackApiType];

@@ -1,4 +1,3 @@
-// こちらを import して使う
 export const PropertyType = {
   SlackApiToken: 'SlackApiToken',
   MembersFolerId: 'MembersFolerId',
@@ -10,5 +9,5 @@ export const PropertyType = {
   Pepper: 'Pepper',
 } as const;
 
-// こちらは定義するだけで使わない
-export type PROPERTY_TYPE = typeof PropertyType[keyof typeof PropertyType];
+// eslint-disable-next-line no-redeclare
+export type PropertyType = typeof PropertyType[keyof typeof PropertyType];
