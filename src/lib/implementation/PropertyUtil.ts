@@ -4,6 +4,13 @@ import { InvalidArgumentError } from '../error/InvalidArgumentError';
 // import 'google-apps-script'; いらない, なしで、webpack も clasp も通る。
 
 export class PropertyUtil implements IPropertyUtil {
+  /**
+   * Scrypt Property を取得する
+   *
+   * @param propertyType PropertyType
+   * @returns Scrypt Property
+   * @throw InvalidArgumentError
+   */
   public getProperty(propertyType: PropertyType): string {
     const property =
       // eslint-disable-next-line no-undef
@@ -13,6 +20,6 @@ export class PropertyUtil implements IPropertyUtil {
       return property;
     }
 
-    throw new InvalidArgumentError('Script Property の値が不正です');
+    throw new InvalidArgumentError('PropertyType の値が不正です');
   }
 }
