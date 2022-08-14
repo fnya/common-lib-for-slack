@@ -1,8 +1,9 @@
 import { PropertyType } from '../types/PropertyType';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
-import 'google-apps-script';
+import { InvalidArgumentError } from '../error/InvalidArgumentError';
+// import 'google-apps-script'; いらない, なしで、webpack も clasp も通る。
 
-class PropertyUtil implements IPropertyUtil {
+export class PropertyUtil implements IPropertyUtil {
   public getProperty(propertyType: PropertyType): string {
     const property =
       // eslint-disable-next-line no-undef
@@ -12,6 +13,6 @@ class PropertyUtil implements IPropertyUtil {
       return property;
     }
 
-    throw new Error('Script Property が取得できません');
+    throw new InvalidArgumentError('Script Property の値が不正です');
   }
 }
