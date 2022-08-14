@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "esnext",
+    "downlevelIteration": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    // 共通ライブラリは以下を設定する
+    "declaration": true, // type を作成
+    "declarationMap": true,
+    "composite": true // 参照可
+  },
+  // 共通ライブラリは以下を設定する
+  "references": [],
+  "include": ["./src/**/*"]
+}
