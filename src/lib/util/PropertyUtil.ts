@@ -1,8 +1,10 @@
 import { PropertyType } from '../types/PropertyType';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
 import { InvalidArgumentError } from '../error/InvalidArgumentError';
+import { injectable } from 'inversify';
 // import 'google-apps-script'; いらない, なしで、webpack も clasp も通る。
 
+@injectable
 export class PropertyUtil implements IPropertyUtil {
   /**
    * Scrypt Property を取得する
