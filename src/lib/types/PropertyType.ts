@@ -1,4 +1,4 @@
-export const PropertyType = {
+const PropertyType = {
   SlackApiToken: 'SlackApiToken',
   MembersFolerId: 'MembersFolerId',
   AdminFolerId: 'AdminFolerId',
@@ -10,4 +10,6 @@ export const PropertyType = {
 } as const;
 
 // eslint-disable-next-line no-redeclare
-export type PropertyType = typeof PropertyType[keyof typeof PropertyType];
+type PropertyType = typeof PropertyType[keyof typeof PropertyType];
+
+export default PropertyType;

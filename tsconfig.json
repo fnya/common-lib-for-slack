@@ -3,7 +3,12 @@
     "target": "es6",
     "outDir": "./dist",
     "rootDir": "./src",
-    "module": "esnext",
+    "module": "commonjs",
+    // "module": "system", // これを指定するとこの lib のソースがビルドされない
+    //
+    // outFile は module が system である必要がある。
+    // ts-loader を参照元が使っている時、指定がないとビルドエラーになる
+    // "outFile": "./dist/index.js",
     "downlevelIteration": true,
     "strict": true,
     "noUnusedLocals": true,
@@ -21,5 +26,5 @@
   },
   // 共通ライブラリは以下を設定する
   "references": [],
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "./node_modules/@types/google-apps-script/**/*"]
 }

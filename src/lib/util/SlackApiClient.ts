@@ -1,13 +1,22 @@
+import { inject, injectable } from 'inversify';
 import { ISlackApiClient } from '../interface/ISlackApiClient';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
-import { inject, injectable } from 'inversify';
-import { TYPES } from '../types/types';
+import Types from '../types/Types';
+import PropertyType from '../types/PropertyType';
 
 @injectable()
-export class SlackApiClient implements ISlackApiClient {
-  private propertyUtil: IPropertyUtil;
+class SlackApiClient implements ISlackApiClient {
+  private iPropertyUtil: IPropertyUtil;
 
-  public constructor(@inject(TYPES.IPropertyUtil) propertyUtil: IPropertyUtil) {
-    this.propertyUtil = propertyUtil;
+  public constructor(
+    @inject(Types.IPropertyUtil) iPropertyUtil: IPropertyUtil
+  ) {
+    this.iPropertyUtil = iPropertyUtil;
+  }
+
+  public getProperty(propertyType: PropertyType): string {
+    return this.iPropertyUtil.getProperty(propertyType);
   }
 }
+
+export default SlackApiClient;

@@ -1,4 +1,4 @@
-export const TYPES = {
+const Types = {
   ICredentialUtil: Symbol.for('ICredentialUtil'),
   IGoogleDrive: Symbol.for('IGoogleDrive'),
   IPropertyUtil: Symbol.for('IPropertyUtil'),
@@ -8,3 +8,5 @@ export const TYPES = {
   ISlackApiClient: Symbol.for('ISlackApiClient'),
   IStringUtil: Symbol.for('IStringUtil'),
 };
+
+export default Types;
