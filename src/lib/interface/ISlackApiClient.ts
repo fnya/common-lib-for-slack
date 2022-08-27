@@ -1,5 +1,6 @@
 export interface ISlackApiClient {
-  getChannels(): void;
-  getMembers(): any;
-  getMessages(channelId: string, oldest: string): any;
+  getChannels(): Promise<any[]>;
+  getMembers(): Promise<any[]>;
+  getMessages(channelId: string, oldest: string): Promise<any[]>;
+  getReplies(channelId: string, parentTs: string): Promise<any[]>;
 }
