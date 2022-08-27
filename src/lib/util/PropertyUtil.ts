@@ -6,10 +6,10 @@ import { InvalidArgumentError } from '../error/InvalidArgumentError';
 @injectable()
 class PropertyUtil implements IPropertyUtil {
   /**
-   * Scrypt Property を取得する
+   * Script Property を取得する
    *
    * @param propertyType PropertyType
-   * @returns Scrypt Property
+   * @returns Script Property
    * @throw InvalidArgumentError
    */
   public getProperty(propertyType: PropertyType): string {

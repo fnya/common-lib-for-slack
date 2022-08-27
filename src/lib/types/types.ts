@@ -1,3 +1,4 @@
+// injectされる側はIを付けない
 const Types = {
   ICredentialUtil: Symbol.for('ICredentialUtil'),
   IGoogleDrive: Symbol.for('IGoogleDrive'),
@@ -5,8 +6,8 @@ const Types = {
   ISpreadSheet: Symbol.for('ISpreadSheet'),
   IDateUtil: Symbol.for('IDateUtil'),
   ILogUtil: Symbol.for('ILogUtil'),
-  ISlackApiClient: Symbol.for('ISlackApiClient'),
   IStringUtil: Symbol.for('IStringUtil'),
+  SlackApiClient: Symbol.for('SlackApiClient'),
 };
 
 export default Types;

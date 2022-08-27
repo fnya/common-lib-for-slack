@@ -3,6 +3,7 @@ const PropertyType = {
   MembersFolerId: 'MembersFolerId',
   AdminFolerId: 'AdminFolerId',
   SystemFolerId: 'SystemFolerId',
+  LogFolerId: 'LogFolerId',
   Version: 'Version',
   CryptoKey: 'CryptoKey',
   StretchingCount: 'StretchingCount',
