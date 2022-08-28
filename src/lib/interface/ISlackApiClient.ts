@@ -1,6 +1,6 @@
 export interface ISlackApiClient {
   getChannels(): any[];
-  getMembers(): any[];
+  getUsers(): any[];
   getMessages(channelId: string, oldest: string): any[];
   getReplies(channelId: string, parentTs: string): any[];
 }

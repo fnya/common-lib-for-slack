@@ -8,6 +8,7 @@ const Types = {
   ILogUtil: Symbol.for('ILogUtil'),
   IStringUtil: Symbol.for('IStringUtil'),
   SlackApiClient: Symbol.for('SlackApiClient'),
+  SpreadSheetManager: Symbol.for('SpreadSheetManager'),
 };
 
 export default Types;

@@ -4,7 +4,7 @@ import { IPropertyUtil } from '../interface/IPropertyUtil';
 import { InvalidArgumentError } from '../error/InvalidArgumentError';
 
 @injectable()
-class PropertyUtil implements IPropertyUtil {
+export class PropertyUtil implements IPropertyUtil {
   /**
    * Script Property を取得する
    *
