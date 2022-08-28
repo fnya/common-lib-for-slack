@@ -94,6 +94,10 @@ export class SlackApiClient implements ISlackApiClient {
         this.createRepliesOptions(channelId, parentTs, oldest)
       );
 
+      // 1.5秒ウェイト
+      // eslint-disable-next-line no-undef
+      Utilities.sleep(1500);
+
       // 親スレッドの内容を削除する
       response.messages.shift();
 
