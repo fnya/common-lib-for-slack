@@ -24,11 +24,9 @@ export class SlackApiClient implements ISlackApiClient {
    *
    * @returns チャンネル一覧
    */
-  public async getChannels(): Promise<any[]> {
+  public getChannels(): any[] {
     const options = { types: 'public_channel,private_channel' };
-    const channels = await this.getSlackApiData(SlackApiType.Channels, options);
-
-    return channels;
+    return this.getSlackApiData(SlackApiType.Channels, options).channels;
   }
 
   /**
@@ -36,10 +34,8 @@ export class SlackApiClient implements ISlackApiClient {
    *
    * @returns メンバー一覧
    */
-  public async getMembers(): Promise<any[]> {
-    const members = await this.getSlackApiData(SlackApiType.Members);
-
-    return members;
+  public getMembers(): any[] {
+    return this.getSlackApiData(SlackApiType.Members);
   }
 
   /**
@@ -49,7 +45,7 @@ export class SlackApiClient implements ISlackApiClient {
    * @param ts 最も古いタイムスタンプ
    * @returns チャンネルごとのメッセージ一覧
    */
-  public async getMessages(channelId: string, ts?: string): Promise<any[]> {
+  public getMessages(channelId: string, ts?: string): any[] {
     let messages: any[] = [];
     let response: any = {};
     let currentPage = 1;
@@ -61,7 +57,7 @@ export class SlackApiClient implements ISlackApiClient {
       const oldest = this.createMessagesOldest(currentPage, response, ts);
 
       // Slack API呼び出し
-      response = await this.getSlackApiData(
+      response = this.getSlackApiData(
         SlackApiType.Messages,
         this.createMessagesOptions(channelId, oldest)
       );
@@ -81,7 +77,7 @@ export class SlackApiClient implements ISlackApiClient {
    * @param parentTs 親スレッドのタイムスタンプ
    * @returns リプライ一覧
    */
-  public async getReplies(channelId: string, parentTs: string): Promise<any[]> {
+  public getReplies(channelId: string, parentTs: string): any[] {
     let replies: any[] = [];
     let response: any = {};
     let currentPage = 1;
@@ -93,7 +89,7 @@ export class SlackApiClient implements ISlackApiClient {
       const oldest = this.createRepliesOldest(currentPage, response, parentTs);
 
       // Slack API呼び出し
-      response = await this.getSlackApiData(
+      response = this.getSlackApiData(
         SlackApiType.Replies,
         this.createRepliesOptions(channelId, parentTs, oldest)
       );
@@ -209,10 +205,7 @@ export class SlackApiClient implements ISlackApiClient {
    * @param params オプションパラメータ
    * @returns Slack API レスポンス
    */
-  private async getSlackApiData(
-    slackApiType: SlackApiType,
-    params: any = {}
-  ): Promise<any> {
+  private getSlackApiData(slackApiType: SlackApiType, params: any = {}): any {
     const url = this.createUrl(slackApiType, params);
 
     const options = {
@@ -222,7 +215,7 @@ export class SlackApiClient implements ISlackApiClient {
     };
 
     // eslint-disable-next-line no-undef
-    const response = await UrlFetchApp.fetch(url, options);
+    const response = UrlFetchApp.fetch(url, options);
     const data = JSON.parse(response.getContentText());
 
     if (data.error) {
