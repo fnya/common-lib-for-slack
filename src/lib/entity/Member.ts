@@ -1,9 +1,12 @@
-export class User {
+export class Member {
   /** 11 桁の Slack user id */
   public id: string;
 
-  /** 表示名(json, 暗号化) */
+  /** 名前(json, 暗号化) */
   public name: string;
+
+  /** 表示名(json, 暗号化) */
+  public displayName: string;
 
   /** アバター画像 URL(null あり) */
   public imageUrl?: string;
@@ -12,21 +15,24 @@ export class User {
   public deleted: boolean;
 
   /**
-   * User のコンストラクタ
+   *  Member のコンストラクタ
    *
    * @param id 11 桁の Slack user id
-   * @param name 表示名(json, 暗号化)
+   * @param name 名前(json, 暗号化)
+   * @param displayName 表示名(json, 暗号化)
    * @param deleted 削除済み
    * @param imageUrl アバター画像 URL(null あり)
    */
   public constructor(
     id: string,
     name: string,
+    displayName: string,
     deleted: boolean,
     imageUrl?: string
   ) {
     this.id = id;
     this.name = name;
+    this.displayName = displayName;
     this.deleted = deleted;
     this.imageUrl = imageUrl;
   }

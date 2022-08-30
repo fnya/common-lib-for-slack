@@ -30,12 +30,12 @@ export class SlackApiClient implements ISlackApiClient {
   }
 
   /**
-   * ユーザー一覧を取得する
+   * メンバー一覧を取得する
    *
-   * @returns ユーザー一覧
+   * @returns メンバー一覧
    */
-  public getUsers(): any[] {
-    return this.getSlackApiData(SlackApiType.Members);
+  public getMembers(): any[] {
+    return this.getSlackApiData(SlackApiType.Members).members;
   }
 
   /**

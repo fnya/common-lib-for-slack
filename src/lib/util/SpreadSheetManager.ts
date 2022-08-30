@@ -68,19 +68,43 @@ export class SpreadSheetManager {
   }
 
   /**
-   * チャンネルをロードする
+   * スプレッドシートをロードする
    *
    * @param folderId フォルダID
    * @param sheetName スプレッドシート名
-   * @returns チャンネルの2次元配列
+   * @returns 2次元配列
    */
-  public loadChannels(folderId: string, sheetName: string): string[][] {
+  public loadSpreadSheet(folderId: string, sheetName: string): string[][] {
     const spreadSheet = this.getSpreadSheet(folderId, sheetName);
     const activeSheet = spreadSheet.getActiveSheet();
     const maxRow = activeSheet.getLastRow();
     const maxColumn = activeSheet.getLastColumn();
 
     return activeSheet.getRange(1, 1, maxRow, maxColumn).getValues();
+  }
+
+  /**
+   * Membersをスプレッドシートに保存する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   * @param members メンバーの2次元配列
+   */
+  public saveMembers(
+    folderId: string,
+    sheetName: string,
+    members: string[][]
+  ): void {
+    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    if (members.length > 0) {
+      // delete/insert
+      activeSheet.clearContents();
+      for (const member of members) {
+        activeSheet.appendRow(member);
+      }
+    }
   }
 
   /**

@@ -1,6 +1,6 @@
 export const SpreadSheetType = {
   Channels: 'channels',
-  Users: 'users',
+  Members: 'members',
   Messages: 'messages',
   Replies: 'replies',
   UserAccount: 'userAccounts',
