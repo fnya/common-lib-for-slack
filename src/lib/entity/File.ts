@@ -14,6 +14,9 @@ export class File {
   /** ファイル形式(ex. png) */
   public fileType: string;
 
+  /** ファイルダウンロードURL */
+  public downloadUrl: string;
+
   /** Google Drive のファイル ID */
   public fileId: string;
 
@@ -25,6 +28,7 @@ export class File {
    * @param name ファイル名
    * @param mimeType MIME タイプ(ex. image/png)
    * @param fileType ファイル形式(ex. png)
+   *
    * @param fileId Google Drive のファイル ID
    */
   public constructor(
@@ -33,6 +37,7 @@ export class File {
     name: string,
     mimeType: string,
     fileType: string,
+    downloadUrl: string,
     fileId: string
   ) {
     this.id = id;
@@ -40,6 +45,7 @@ export class File {
     this.name = name;
     this.mimeType = mimeType;
     this.fileType = fileType;
+    this.downloadUrl = downloadUrl;
     this.fileId = fileId;
   }
 }

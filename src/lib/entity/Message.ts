@@ -1,7 +1,3 @@
-import { Reaction } from './Reaction';
-import { File } from './File';
-import { Url } from './Url';
-
 export class Message {
   /** メッセージのタイムスタンプ  */
   public ts: string;
@@ -21,14 +17,17 @@ export class Message {
   /** リプライカウント */
   public replyCount: number;
 
-  /** リアクションのリスト(null あり) */
-  public reactions?: Reaction[];
+  /** json */
+  public json: string;
 
-  /** 添付ファイルのリスト(null あり) */
-  public files?: File[];
+  /** リアクションのリスト */
+  public reactions: string;
 
-  /** url のリスト(null あり)  */
-  public urls?: Url[];
+  /** 添付ファイルのリスト */
+  public files: string;
+
+  /** url のリスト */
+  public urls: string;
 
   /**
    * Message のコンストラクタ
@@ -39,9 +38,10 @@ export class Message {
    * @param userName user name (暗号化)
    * @param text メッセージ(暗号化,json)
    * @param replyCount リプライカウント
-   * @param reactions リアクションのリスト(null あり)
-   * @param files 添付ファイルのリスト(null あり)
-   * @param urls url のリスト(null あり)
+   * @param json json
+   * @param reactions リアクションのリスト
+   * @param files 添付ファイルのリスト
+   * @param urls url のリスト
    */
   public constructor(
     ts: string,
@@ -50,9 +50,10 @@ export class Message {
     userName: string,
     text: string,
     replyCount: number,
-    reactions?: Reaction[],
-    files?: File[],
-    urls?: Url[]
+    json: string,
+    reactions: string,
+    files: string,
+    urls: string
   ) {
     this.ts = ts;
     this.created = created;
@@ -60,6 +61,7 @@ export class Message {
     this.userName = userName;
     this.text = text;
     this.replyCount = replyCount;
+    this.json = json;
     this.reactions = reactions;
     this.files = files;
     this.urls = urls;

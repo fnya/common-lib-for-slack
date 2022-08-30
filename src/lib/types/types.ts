@@ -10,6 +10,7 @@ const Types = {
   SlackApiClient: Symbol.for('SlackApiClient'),
   SlackTranslator: Symbol.for('SlackTranslator'),
   SpreadSheetManager: Symbol.for('SpreadSheetManager'),
+  GoogleDrive: Symbol.for('GoogleDrive'),
 };
 
 export default Types;

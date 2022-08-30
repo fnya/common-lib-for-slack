@@ -35,7 +35,7 @@ export class SpreadSheetManager {
     if (it.hasNext()) {
       // 既に存在していた場合
       throw new Error(
-        `作成しようとしたスプレッドシートは既に存在しています。${folder.getName()}フォルダ:${sheetName}`
+        `作成しようとしたスプレッドシートは既に存在しています。${folder.getName()} フォルダ:${sheetName}`
       );
     }
 
@@ -103,6 +103,30 @@ export class SpreadSheetManager {
       activeSheet.clearContents();
       for (const member of members) {
         activeSheet.appendRow(member);
+      }
+    }
+  }
+
+  /**
+   * Messagesをスプレッドシートに保存する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   * @param messages メッセージの2次元配列
+   */
+  public saveMessages(
+    folderId: string,
+    sheetName: string,
+    messages: string[][]
+  ): void {
+    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    if (messages.length > 0) {
+      // delete/insert
+      activeSheet.clearContents();
+      for (const message of messages) {
+        activeSheet.appendRow(message);
       }
     }
   }
