@@ -50,10 +50,10 @@ export class Message {
    * @param isEdited 編集したか
    * @param editedTs 編集したts
    * @param edited editedTs を変換した日時(yyyy-MM-dd HH:mm:ss)
-   * @param json json
    * @param reactions リアクションのリスト
    * @param files 添付ファイルのリスト
    * @param urls url のリスト
+   * @param json json
    */
   public constructor(
     ts: string,
@@ -65,10 +65,10 @@ export class Message {
     isEdited: boolean,
     editedTs: string,
     edited: string,
-    json: string,
     reactions: string,
     files: string,
-    urls: string
+    urls: string,
+    json: string
   ) {
     this.ts = ts;
     this.created = created;
@@ -79,9 +79,9 @@ export class Message {
     this.isEdited = isEdited;
     this.editedTs = editedTs;
     this.edited = edited;
-    this.json = json;
     this.reactions = reactions;
     this.files = files;
     this.urls = urls;
+    this.json = json;
   }
 }

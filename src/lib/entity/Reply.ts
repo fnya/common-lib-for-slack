@@ -1,7 +1,3 @@
-import { Reaction } from './Reaction';
-import { File } from './File';
-import { Url } from './Url';
-
 export class Reply {
   /** メッセージのタイムスタンプ  */
   public ts: string;
@@ -21,14 +17,26 @@ export class Reply {
   /** 親スレッドのタイムスタンプ */
   public treadTs: string;
 
-  /** リアクションのリスト(null あり) */
-  public reactions?: Reaction[];
+  /** リアクションのリスト */
+  public reactions: string;
 
-  /** 添付ファイルのリスト(null あり) */
-  public files?: File[];
+  /** 添付ファイルのリスト */
+  public files: string;
 
-  /** url のリスト(null あり)  */
-  public urls?: Url[];
+  /** url のリスト  */
+  public urls: string;
+
+  /** 編集したか */
+  public isEdited: boolean;
+
+  /** 編集したts */
+  public editedTs: string;
+
+  /** editedTs を変換した日時(yyyy-MM-dd HH:mm:ss) */
+  public edited: string;
+
+  /** json */
+  public json: string;
 
   /**
    * Reply のコンストラクタ
@@ -39,9 +47,13 @@ export class Reply {
    * @param userName user name (暗号化)
    * @param text メッセージ(暗号化,json)
    * @param treadTs 親スレッドのタイムスタンプ
-   * @param reactions リアクションのリスト(null あり)
-   * @param files 添付ファイルのリスト(null あり)
-   * @param urls url のリスト(null あり)
+   * @param reactions リアクションのリスト
+   * @param files 添付ファイルのリスト
+   * @param urls url のリスト
+   * @param isEdited 編集したか
+   * @param editedTs 編集したts
+   * @param edited editedTs を変換した日時(yyyy-MM-dd HH:mm:ss)
+   * @param json json
    */
   public constructor(
     ts: string,
@@ -50,9 +62,13 @@ export class Reply {
     userName: string,
     text: string,
     treadTs: string,
-    reactions?: Reaction[],
-    files?: File[],
-    urls?: Url[]
+    reactions: string,
+    files: string,
+    urls: string,
+    isEdited: boolean,
+    editedTs: string,
+    edited: string,
+    json: string
   ) {
     this.ts = ts;
     this.created = created;
@@ -63,5 +79,9 @@ export class Reply {
     this.reactions = reactions;
     this.files = files;
     this.urls = urls;
+    this.isEdited = isEdited;
+    this.editedTs = editedTs;
+    this.edited = edited;
+    this.json = json;
   }
 }

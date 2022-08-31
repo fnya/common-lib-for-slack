@@ -76,6 +76,19 @@ export class SpreadSheetManager {
     if (channels.length > 0) {
       // delete/insert
       activeSheet.clearContents();
+      // activeSheet.clearFormats();
+
+      // const range = activeSheet.getRange(
+      //   1,
+      //   1,
+      //   activeSheet.getMaxRows(),
+      //   activeSheet.getMaxColumns()
+      // );
+
+      // https://stackoverflow.com/questions/13758913/format-a-google-sheets-cell-in-plaintext-via-apps-script
+      // range.setNumberFormat('@STRING@');
+      // range.setNumberFormat('@');
+
       for (const channel of channels) {
         activeSheet.appendRow(channel);
       }
@@ -115,7 +128,6 @@ export class SpreadSheetManager {
 
     if (members.length > 0) {
       // delete/insert
-      activeSheet.clearContents();
       for (const member of members) {
         activeSheet.appendRow(member);
       }
@@ -142,6 +154,30 @@ export class SpreadSheetManager {
       activeSheet.clearContents();
       for (const message of messages) {
         activeSheet.appendRow(message);
+      }
+    }
+  }
+
+  /**
+   * Repliesをスプレッドシートに保存する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   * @param replies メッセージの2次元配列
+   */
+  public saveReplies(
+    folderId: string,
+    sheetName: string,
+    replies: string[][]
+  ): void {
+    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    if (replies.length > 0) {
+      // delete/insert
+      activeSheet.clearContents();
+      for (const reply of replies) {
+        activeSheet.appendRow(reply);
       }
     }
   }

@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { Channel } from '../entity/Channel';
 import { Member } from '../entity/Member';
 import { Message } from '../entity/Message';
+import { Reply } from '../entity/Reply';
 import { Reaction } from '../entity/Reaction';
 import { File } from '../entity/File';
 import { Url } from '../entity/Url';
@@ -250,6 +251,70 @@ export class SlackTranslator {
   }
 
   /**
+   * 2次元配列をメッセージの配列に変換する
+   *
+   * @param arrays 2次元配列
+   * @returns メッセージの配列
+   */
+  public translateArraysToMessages(arrays: string[][]): Message[] {
+    const messages: Message[] = [];
+
+    for (const array of arrays) {
+      const message = new Message(
+        array[0],
+        array[1],
+        array[2],
+        array[3],
+        array[4],
+        Number(array[5]),
+        array[6] === 'true',
+        array[7],
+        array[8],
+        array[9],
+        array[10],
+        array[11],
+        array[12]
+      );
+      messages.push(message);
+    }
+
+    return messages;
+  }
+
+  /**
+   * リプライの配列を2次元配列に変換する
+   *
+   * @param replies リプライの配列
+   * @returns リプライの2次元配列
+   */
+  public translateRepliesToArrays(replies: Reply[]): string[][] {
+    const arrays: string[][] = [];
+
+    for (const reply of replies) {
+      const array: string[] = [];
+      const created = this.createDateString(reply.ts);
+
+      array.push(reply.ts);
+      array.push(created);
+      array.push(reply.userId);
+      array.push(reply.userName);
+      array.push(reply.text);
+      array.push(reply.treadTs);
+      array.push(reply.reactions);
+      array.push(reply.files);
+      array.push(reply.urls);
+      array.push(String(reply.isEdited));
+      array.push(reply.editedTs);
+      array.push(reply.edited);
+      array.push(JSON.stringify(reply));
+
+      arrays.push(array);
+    }
+
+    return arrays;
+  }
+
+  /**
    * リアクションを作成する
    *
    * @param entity エンティティ
@@ -294,6 +359,53 @@ export class SlackTranslator {
     }
 
     return JSON.stringify(files);
+  }
+
+  /**
+   * Slack APIのレスポンスをリプライの配列に変換
+   *
+   * @param entities Slack APIのレスポンス
+   * @returns リプライの配列
+   */
+  public translateToReplies(entities: any[], members: Member[]): Reply[] {
+    const replies: Reply[] = [];
+
+    for (const entity of entities) {
+      const created = this.createDateString(entity.ts);
+      const userName = this.getMemberName(entity.user, members);
+      const json = JSON.stringify(entity);
+      const reactions = this.createReactions(entity);
+      const files = this.createFiles(entity);
+      const urls = this.createUrls(entity);
+
+      const reply = new Reply(
+        entity.ts,
+        created,
+        entity.user,
+        userName,
+        entity.text,
+        entity.thread_ts,
+        reactions,
+        files,
+        urls,
+        !!entity.edited,
+        entity.edited ? entity.edited.ts : '',
+        entity.edited ? this.createDateString(entity.edited.ts) : '',
+        json
+      );
+
+      replies.push(reply);
+    }
+
+    return replies.sort((a, b) => {
+      if (a.ts > b.ts) {
+        return 1;
+      }
+      if (a.ts < b.ts) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   /**
