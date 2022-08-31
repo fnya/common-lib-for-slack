@@ -17,6 +17,15 @@ export class Message {
   /** リプライカウント */
   public replyCount: number;
 
+  /** 編集したか */
+  public isEdited: boolean;
+
+  /** 編集したts */
+  public editedTs: string;
+
+  /** editedTs を変換した日時(yyyy-MM-dd HH:mm:ss) */
+  public edited: string;
+
   /** json */
   public json: string;
 
@@ -38,6 +47,9 @@ export class Message {
    * @param userName user name (暗号化)
    * @param text メッセージ(暗号化,json)
    * @param replyCount リプライカウント
+   * @param isEdited 編集したか
+   * @param editedTs 編集したts
+   * @param edited editedTs を変換した日時(yyyy-MM-dd HH:mm:ss)
    * @param json json
    * @param reactions リアクションのリスト
    * @param files 添付ファイルのリスト
@@ -50,6 +62,9 @@ export class Message {
     userName: string,
     text: string,
     replyCount: number,
+    isEdited: boolean,
+    editedTs: string,
+    edited: string,
     json: string,
     reactions: string,
     files: string,
@@ -61,6 +76,9 @@ export class Message {
     this.userName = userName;
     this.text = text;
     this.replyCount = replyCount;
+    this.isEdited = isEdited;
+    this.editedTs = editedTs;
+    this.edited = edited;
     this.json = json;
     this.reactions = reactions;
     this.files = files;

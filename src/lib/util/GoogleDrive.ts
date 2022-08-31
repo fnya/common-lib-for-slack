@@ -65,6 +65,24 @@ export class GoogleDrive implements IGoogleDrive {
   }
 
   /**
+   * 指定したフォルダが存在しなければ作成してフォルダIDを返し、存在していればそのフォルダIDを返す
+   *
+   * @param folderId フォルダID
+   * @param folderName フォルダ名
+   * @returns フォルダID
+   */
+  public createFolderOrGetFolderId(
+    folderId: string,
+    folderName: string
+  ): string {
+    if (this.existFolder(folderId, folderName)) {
+      return this.getFolderId(folderId, folderName);
+    }
+
+    return this.createFolder(folderId, folderName);
+  }
+
+  /**
    * フォルダIDからフォルダを取得する
    *
    * @param folderId フォルダID

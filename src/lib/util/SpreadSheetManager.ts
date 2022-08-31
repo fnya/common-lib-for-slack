@@ -44,6 +44,21 @@ export class SpreadSheetManager {
   }
 
   /**
+   * 指定したスプレッドシートが存在しなければ作成する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   */
+  public createIfSpreadSheetDoesNotExist(
+    folderId: string,
+    sheetName: string
+  ): void {
+    if (!this.existsSpreadSheet(folderId, sheetName)) {
+      this.createSpreadSheet(folderId, sheetName);
+    }
+  }
+
+  /**
    * Channelsをスプレッドシートに保存する
    *
    * @param folderId フォルダID

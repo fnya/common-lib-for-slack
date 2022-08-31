@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { inject, injectable } from 'inversify';
 import { ISlackApiClient } from '../interface/ISlackApiClient';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
@@ -95,7 +96,6 @@ export class SlackApiClient implements ISlackApiClient {
       );
 
       // 1.5秒ウェイト
-      // eslint-disable-next-line no-undef
       Utilities.sleep(1500);
 
       // 親スレッドの内容を削除する
@@ -107,6 +107,33 @@ export class SlackApiClient implements ISlackApiClient {
 
     // 最新リプライを一番下にする
     return replies.sort((a, b) => Number(a.ts) - Number(b.ts));
+  }
+
+  public downloadFile(
+    folderId: string,
+    downloadUrl: string,
+    fileId: string
+  ): void {
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + this.getProperty(PropertyType.SlackApiToken),
+      },
+    };
+
+    // ファイル取得
+    const response = UrlFetchApp.fetch(downloadUrl, options);
+    const blob = response.getBlob().setName(fileId);
+
+    const folder = this.getFolder(folderId);
+
+    // 既にファイルが存在していたら削除
+    const it = folder.getFilesByName(fileId);
+    if (it.hasNext()) {
+      folder.removeFile(it.next());
+    }
+
+    // ファイル作成
+    folder.createFile(blob);
   }
 
   /**
@@ -266,5 +293,15 @@ export class SlackApiClient implements ISlackApiClient {
    */
   private getProperty(propertyType: PropertyType): string {
     return this.iPropertyUtil.getProperty(propertyType);
+  }
+
+  /**
+   * フォルダIDからフォルダを取得する
+   *
+   * @param folderId フォルダID
+   * @returns フォルダ
+   */
+  private getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
+    return DriveApp.getFolderById(folderId);
   }
 }

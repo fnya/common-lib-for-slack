@@ -193,6 +193,9 @@ export class SlackTranslator {
         userName,
         entity.text,
         entity.reply_count ? entity.reply_count : 0,
+        !!entity.edited,
+        entity.edited ? entity.edited.ts : '',
+        entity.edited ? this.createDateString(entity.edited.ts) : '',
         json,
         reactions,
         files,
@@ -232,9 +235,13 @@ export class SlackTranslator {
       array.push(message.userName);
       array.push(message.text);
       array.push(message.replyCount.toString());
+      array.push(String(message.isEdited));
+      array.push(message.editedTs);
+      array.push(message.edited);
       array.push(message.reactions);
       array.push(message.files);
       array.push(message.urls);
+      array.push(JSON.stringify(message));
 
       arrays.push(array);
     }
@@ -280,8 +287,7 @@ export class SlackTranslator {
           file.name,
           file.mimetype,
           file.filetype,
-          file.url_private_download,
-          ''
+          file.url_private_download
         );
         files.push(myFile);
       }
