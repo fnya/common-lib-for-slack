@@ -182,6 +182,7 @@ export class SlackTranslator {
    * Slack APIのレスポンスをメッセージの配列に変換
    *
    * @param entities Slack APIのレスポンス
+   * @param members メンバー一覧
    * @returns メッセージの配列
    */
   public translateToMessages(entities: any[], members: Member[]): Message[] {
@@ -207,10 +208,10 @@ export class SlackTranslator {
         entity.edited
           ? this.iDateUtil.createDateTimeString(entity.edited.ts)
           : '',
-        json,
         reactions,
         files,
-        urls
+        urls,
+        json
       );
 
       messages.push(message);
@@ -252,7 +253,7 @@ export class SlackTranslator {
       array.push(message.reactions);
       array.push(message.files);
       array.push(message.urls);
-      array.push(JSON.stringify(message));
+      array.push(message.json);
 
       arrays.push(array);
     }
@@ -316,7 +317,7 @@ export class SlackTranslator {
       array.push(String(reply.isEdited));
       array.push(reply.editedTs);
       array.push(reply.edited);
-      array.push(JSON.stringify(reply));
+      array.push(reply.json);
 
       arrays.push(array);
     }

@@ -11,6 +11,10 @@ export class DateUtil implements IDateUtil {
    * @returns 日時文字列
    */
   public createDateTimeString(ts: string): string {
+    if (!ts) {
+      return '';
+    }
+
     const date = new Date(Number(ts) * 1000);
     return (
       date.getFullYear() +
