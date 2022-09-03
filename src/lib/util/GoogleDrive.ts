@@ -24,7 +24,7 @@ export class GoogleDrive implements IGoogleDrive {
   }
 
   /**
-   * 指定したフォルダIDの配下にフォルダIDを取得する
+   * 指定したフォルダID配下のフォルダIDを取得する
    *
    * @param folderId フォルダID
    * @param folderName フォルダ名
@@ -39,7 +39,7 @@ export class GoogleDrive implements IGoogleDrive {
       return it.next().getId();
     }
     throw new Error(
-      `作成しようとしたフォルダは存在しません。${folder.getName()} フォルダ:${folderName}`
+      `指定したフォルダは存在しません。 フォルダID:${folderId} フォルダ名:${folderName}`
     );
   }
 
@@ -57,7 +57,7 @@ export class GoogleDrive implements IGoogleDrive {
     if (it.hasNext()) {
       // 既に存在していた場合
       throw new Error(
-        `作成しようとしたフォルダは既に存在しています。${folder.getName()} フォルダ:${folderName}`
+        `作成しようとしたフォルダは既に存在しています。 フォルダID:${folderId} フォルダ名:${folderName}`
       );
     }
 
@@ -88,7 +88,7 @@ export class GoogleDrive implements IGoogleDrive {
    * @param folderId フォルダID
    * @returns フォルダ
    */
-  private getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
+  public getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
     return DriveApp.getFolderById(folderId);
   }
 }

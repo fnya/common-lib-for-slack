@@ -11,6 +11,9 @@ const Types = {
   SlackTranslator: Symbol.for('SlackTranslator'),
   SpreadSheetManager: Symbol.for('SpreadSheetManager'),
   GoogleDrive: Symbol.for('GoogleDrive'),
+  JsonUtil: Symbol.for('JsonUtil'),
+  DateUtil: Symbol.for('DateUtil'),
+  PropertyUtil: Symbol.for('PropertyUtil'),
 };
 
 export default Types;

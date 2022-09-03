@@ -1,8 +1,16 @@
 /* eslint-disable no-undef */
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
+import { IGoogleDrive } from '../interface/IGoogleDrive';
+import Types from '../types/Types';
 
 @injectable()
 export class SpreadSheetManager {
+  private iGoogleDrive: IGoogleDrive;
+
+  public constructor(@inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive) {
+    this.iGoogleDrive = iGoogleDrive;
+  }
+
   /**
    * スプレッドシート存在チェック
    *
@@ -10,8 +18,8 @@ export class SpreadSheetManager {
    * @param sheetName スプレッドシート名
    * @returns true:存在する/false:存在しない
    */
-  public existsSpreadSheet(folderId: string, sheetName: string): boolean {
-    const folder = this.getFolder(folderId);
+  public exists(folderId: string, sheetName: string): boolean {
+    const folder = this.iGoogleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {
@@ -28,8 +36,8 @@ export class SpreadSheetManager {
    * @param folderId フォルダID
    * @param sheetName スプレッドシート名
    */
-  public createSpreadSheet(folderId: string, sheetName: string): void {
-    const folder = this.getFolder(folderId);
+  public create(folderId: string, sheetName: string): void {
+    const folder = this.iGoogleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {
@@ -49,49 +57,9 @@ export class SpreadSheetManager {
    * @param folderId フォルダID
    * @param sheetName スプレッドシート名
    */
-  public createIfSpreadSheetDoesNotExist(
-    folderId: string,
-    sheetName: string
-  ): void {
-    if (!this.existsSpreadSheet(folderId, sheetName)) {
-      this.createSpreadSheet(folderId, sheetName);
-    }
-  }
-
-  /**
-   * Channelsをスプレッドシートに保存する
-   *
-   * @param folderId フォルダID
-   * @param sheetName スプレッドシート名
-   * @param channels チャンネルの2次元配列
-   */
-  public saveChannels(
-    folderId: string,
-    sheetName: string,
-    channels: string[][]
-  ): void {
-    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
-    const activeSheet = spreadSheet.getActiveSheet();
-
-    if (channels.length > 0) {
-      // delete/insert
-      activeSheet.clearContents();
-      // activeSheet.clearFormats();
-
-      // const range = activeSheet.getRange(
-      //   1,
-      //   1,
-      //   activeSheet.getMaxRows(),
-      //   activeSheet.getMaxColumns()
-      // );
-
-      // https://stackoverflow.com/questions/13758913/format-a-google-sheets-cell-in-plaintext-via-apps-script
-      // range.setNumberFormat('@STRING@');
-      // range.setNumberFormat('@');
-
-      for (const channel of channels) {
-        activeSheet.appendRow(channel);
-      }
+  public createIfDoesNotExist(folderId: string, sheetName: string): void {
+    if (!this.exists(folderId, sheetName)) {
+      this.create(folderId, sheetName);
     }
   }
 
@@ -102,7 +70,7 @@ export class SpreadSheetManager {
    * @param sheetName スプレッドシート名
    * @returns 2次元配列
    */
-  public loadSpreadSheet(folderId: string, sheetName: string): string[][] {
+  public load(folderId: string, sheetName: string): string[][] {
     const spreadSheet = this.getSpreadSheet(folderId, sheetName);
     const activeSheet = spreadSheet.getActiveSheet();
     const maxRow = activeSheet.getLastRow();
@@ -112,73 +80,23 @@ export class SpreadSheetManager {
   }
 
   /**
-   * Membersをスプレッドシートに保存する
+   * arraysをスプレッドシートに上書き保存する
    *
    * @param folderId フォルダID
    * @param sheetName スプレッドシート名
-   * @param members メンバーの2次元配列
+   * @param arrays 2次元配列
    */
-  public saveMembers(
-    folderId: string,
-    sheetName: string,
-    members: string[][]
-  ): void {
+  public save(folderId: string, sheetName: string, arrays: string[][]): void {
     const spreadSheet = this.getSpreadSheet(folderId, sheetName);
     const activeSheet = spreadSheet.getActiveSheet();
 
-    if (members.length > 0) {
-      // delete/insert
-      for (const member of members) {
-        activeSheet.appendRow(member);
-      }
-    }
-  }
-
-  /**
-   * Messagesをスプレッドシートに保存する
-   *
-   * @param folderId フォルダID
-   * @param sheetName スプレッドシート名
-   * @param messages メッセージの2次元配列
-   */
-  public saveMessages(
-    folderId: string,
-    sheetName: string,
-    messages: string[][]
-  ): void {
-    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
-    const activeSheet = spreadSheet.getActiveSheet();
-
-    if (messages.length > 0) {
+    if (arrays.length > 0) {
       // delete/insert
       activeSheet.clearContents();
-      for (const message of messages) {
-        activeSheet.appendRow(message);
-      }
-    }
-  }
-
-  /**
-   * Repliesをスプレッドシートに保存する
-   *
-   * @param folderId フォルダID
-   * @param sheetName スプレッドシート名
-   * @param replies メッセージの2次元配列
-   */
-  public saveReplies(
-    folderId: string,
-    sheetName: string,
-    replies: string[][]
-  ): void {
-    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
-    const activeSheet = spreadSheet.getActiveSheet();
-
-    if (replies.length > 0) {
-      // delete/insert
-      activeSheet.clearContents();
-      for (const reply of replies) {
-        activeSheet.appendRow(reply);
-      }
+      activeSheet
+        .getRange(1, 1, arrays.length, arrays[0].length)
+        .setNumberFormat('@')
+        .setValues(arrays);
     }
   }
 
@@ -193,7 +111,7 @@ export class SpreadSheetManager {
     folderId: string,
     sheetName: string
   ): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    const folder = this.getFolder(folderId);
+    const folder = this.iGoogleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {
@@ -203,17 +121,7 @@ export class SpreadSheetManager {
     }
 
     throw new Error(
-      `指定したスプレッドシートは存在しません。${folder.getName()}フォルダ:${sheetName}`
+      `指定したスプレッドシートは存在しません。フォルダID:${folderId},スプレッドシート:${sheetName}`
     );
-  }
-
-  /**
-   * フォルダIDからフォルダを取得する
-   *
-   * @param folderId フォルダID
-   * @returns フォルダ
-   */
-  private getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
-    return DriveApp.getFolderById(folderId);
   }
 }

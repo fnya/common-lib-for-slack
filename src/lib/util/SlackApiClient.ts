@@ -2,6 +2,7 @@
 import { inject, injectable } from 'inversify';
 import { ISlackApiClient } from '../interface/ISlackApiClient';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
+import { IGoogleDrive } from '../interface/IGoogleDrive';
 import Types from '../types/Types';
 import PropertyType from '../types/PropertyType';
 import { SlackApiType } from '../types/SlackApiType';
@@ -13,11 +14,14 @@ export class SlackApiClient implements ISlackApiClient {
   private static LIMIT_PER_REQUEST = 1000;
   private static OLDEST_MESSAGE_YEAR = 5; // メッセージを何年前から取得するか設定
   private iPropertyUtil: IPropertyUtil;
+  private iGoogleDrive: IGoogleDrive;
 
   public constructor(
-    @inject(Types.IPropertyUtil) iPropertyUtil: IPropertyUtil
+    @inject(Types.IPropertyUtil) iPropertyUtil: IPropertyUtil,
+    @inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive
   ) {
     this.iPropertyUtil = iPropertyUtil;
+    this.iGoogleDrive = iGoogleDrive;
   }
 
   /**
@@ -124,7 +128,7 @@ export class SlackApiClient implements ISlackApiClient {
     const response = UrlFetchApp.fetch(downloadUrl, options);
     const blob = response.getBlob().setName(fileId);
 
-    const folder = this.getFolder(folderId);
+    const folder = this.iGoogleDrive.getFolder(folderId);
 
     // 既にファイルが存在していたら削除
     const it = folder.getFilesByName(fileId);
@@ -293,15 +297,5 @@ export class SlackApiClient implements ISlackApiClient {
    */
   private getProperty(propertyType: PropertyType): string {
     return this.iPropertyUtil.getProperty(propertyType);
-  }
-
-  /**
-   * フォルダIDからフォルダを取得する
-   *
-   * @param folderId フォルダID
-   * @returns フォルダ
-   */
-  private getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
-    return DriveApp.getFolderById(folderId);
   }
 }

@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { Channel } from '../entity/Channel';
 import { Member } from '../entity/Member';
 import { Message } from '../entity/Message';
@@ -6,12 +6,20 @@ import { Reply } from '../entity/Reply';
 import { Reaction } from '../entity/Reaction';
 import { File } from '../entity/File';
 import { Url } from '../entity/Url';
+import { IDateUtil } from '../interface/IDateUtil';
+import Types from '../types/Types';
 
 /**
  * Slack のデータを変換するクラス
  */
 @injectable()
 export class SlackTranslator {
+  private iDateUtil: IDateUtil;
+
+  public constructor(@inject(Types.IDateUtil) iDateUtil: IDateUtil) {
+    this.iDateUtil = iDateUtil;
+  }
+
   /**
    * Slack APIのレスポンスをチャンネルの配列に変換
    *
@@ -180,7 +188,7 @@ export class SlackTranslator {
     const messages: Message[] = [];
 
     for (const entity of entities) {
-      const created = this.createDateString(entity.ts);
+      const created = this.iDateUtil.createDateTimeString(entity.ts);
       const userName = this.getMemberName(entity.user, members);
       const json = JSON.stringify(entity);
       const reactions = this.createReactions(entity);
@@ -196,7 +204,9 @@ export class SlackTranslator {
         entity.reply_count ? entity.reply_count : 0,
         !!entity.edited,
         entity.edited ? entity.edited.ts : '',
-        entity.edited ? this.createDateString(entity.edited.ts) : '',
+        entity.edited
+          ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+          : '',
         json,
         reactions,
         files,
@@ -228,7 +238,7 @@ export class SlackTranslator {
 
     for (const message of messages) {
       const array: string[] = [];
-      const created = this.createDateString(message.ts);
+      const created = this.iDateUtil.createDateTimeString(message.ts);
 
       array.push(message.ts);
       array.push(created);
@@ -292,7 +302,7 @@ export class SlackTranslator {
 
     for (const reply of replies) {
       const array: string[] = [];
-      const created = this.createDateString(reply.ts);
+      const created = this.iDateUtil.createDateTimeString(reply.ts);
 
       array.push(reply.ts);
       array.push(created);
@@ -344,7 +354,7 @@ export class SlackTranslator {
 
     if (entity.files) {
       for (const file of entity.files) {
-        const created = this.createDateString(file.created);
+        const created = this.iDateUtil.createDateTimeString(file.created);
 
         const myFile = new File(
           file.id,
@@ -371,7 +381,7 @@ export class SlackTranslator {
     const replies: Reply[] = [];
 
     for (const entity of entities) {
-      const created = this.createDateString(entity.ts);
+      const created = this.iDateUtil.createDateTimeString(entity.ts);
       const userName = this.getMemberName(entity.user, members);
       const json = JSON.stringify(entity);
       const reactions = this.createReactions(entity);
@@ -390,7 +400,9 @@ export class SlackTranslator {
         urls,
         !!entity.edited,
         entity.edited ? entity.edited.ts : '',
-        entity.edited ? this.createDateString(entity.edited.ts) : '',
+        entity.edited
+          ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+          : '',
         json
       );
 
@@ -452,38 +464,5 @@ export class SlackTranslator {
     }
 
     return '';
-  }
-
-  /**
-   * tsから日時文字列を作成する
-   *
-   * @param ts ts
-   * @returns 日時文字列
-   */
-  private createDateString(ts: string): string {
-    const date = new Date(Number(ts) * 1000);
-    return (
-      date.getFullYear() +
-      '-' +
-      this.paddingZero(date.getMonth() + 1) +
-      '-' +
-      this.paddingZero(date.getDate()) +
-      ' ' +
-      this.paddingZero(date.getHours()) +
-      ':' +
-      this.paddingZero(date.getMinutes()) +
-      ':' +
-      this.paddingZero(date.getSeconds())
-    );
-  }
-
-  /**
-   * 数値を前ゼロ2桁に整形する
-   *
-   * @param num 数値
-   * @returns 前ゼロ2桁数値
-   */
-  private paddingZero(num: number): string {
-    return ('00' + num.toString()).slice(-2);
   }
 }
