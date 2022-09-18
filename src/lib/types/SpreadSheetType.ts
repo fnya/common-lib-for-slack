@@ -6,7 +6,7 @@ export const SpreadSheetType = {
   UserAccount: 'userAccounts',
   BasicAccount: 'basicAccount',
   MessageStatus: 'messageStatus',
-  repliesStatus: 'repliesStatus',
+  RepliesStatus: 'repliesStatus',
 } as const;
 
 // eslint-disable-next-line no-redeclare

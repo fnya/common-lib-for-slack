@@ -3,6 +3,7 @@ import { Member } from '../entity/Member';
 import { Message } from '../entity/Message';
 import { MessageStatus } from '../entity/MessageStatus';
 import { Reply } from '../entity/Reply';
+import { ReplyStatus } from '../entity/ReplyStatus';
 
 export interface ISlackTranslator {
   translateToChannels(entities: any[]): Channel[];
@@ -12,6 +13,7 @@ export interface ISlackTranslator {
   translateMembersToArrays(members: Member[]): string[][];
   translateArraysToMembers(arrays: string[][]): Member[];
   translateArraysToMessageStatus(arrays: string[][]): MessageStatus[];
+  translateArraysToReplyStatus(arrays: string[][]): ReplyStatus[];
   translateToMessages(entities: any[], members: Member[]): Message[];
   translateMessagesToArrays(messages: Message[]): string[][];
   translateArraysToMessages(arrays: string[][]): Message[];

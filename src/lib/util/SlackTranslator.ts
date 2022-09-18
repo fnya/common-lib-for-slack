@@ -10,6 +10,7 @@ import { MessageStatus } from '../entity/MessageStatus';
 import { IDateUtil } from '../interface/IDateUtil';
 import Types from '../types/Types';
 import { ISlackTranslator } from '../interface/ISlackTranslator';
+import { ReplyStatus } from '../entity/ReplyStatus';
 
 /**
  * Slack のデータを変換するクラス
@@ -198,6 +199,23 @@ export class SlackTranslator implements ISlackTranslator {
   }
 
   /**
+   * 2次元配列をリプライステータスの配列に変換する
+   *
+   * @param arrays 2次元配列
+   * @returns リプライステータスの配列
+   */
+  public translateArraysToReplyStatus(arrays: string[][]): ReplyStatus[] {
+    const replyStatuses: ReplyStatus[] = [];
+
+    for (const array of arrays) {
+      const replyStatus = new ReplyStatus(array[0], array[1], array[2]);
+      replyStatuses.push(replyStatus);
+    }
+
+    return replyStatuses;
+  }
+
+  /**
    * Slack APIのレスポンスをメッセージの配列に変換
    *
    * @param entities Slack APIのレスポンス
@@ -373,6 +391,10 @@ export class SlackTranslator implements ISlackTranslator {
       const reactions = this.createReactions(entity);
       const files = this.createFiles(entity);
       const urls = this.createUrls(entity);
+      const editedTs = entity.edited ? entity.edited.ts : '';
+      const edited = entity.edited
+        ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+        : '';
 
       const reply = new Reply(
         entity.ts,
@@ -385,10 +407,8 @@ export class SlackTranslator implements ISlackTranslator {
         files,
         urls,
         !!entity.edited,
-        entity.edited ? entity.edited.ts : '',
-        entity.edited
-          ? this.iDateUtil.createDateTimeString(entity.edited.ts)
-          : '',
+        editedTs,
+        edited,
         json
       );
 

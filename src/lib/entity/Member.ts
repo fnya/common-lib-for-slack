@@ -2,10 +2,10 @@ export class Member {
   /** 11 桁の Slack user id */
   public id: string;
 
-  /** 名前(json, 暗号化) */
+  /** 名前 */
   public name: string;
 
-  /** 表示名(json, 暗号化) */
+  /** 表示名 */
   public displayName: string;
 
   /** アバター画像 URL(null あり) */
@@ -18,8 +18,8 @@ export class Member {
    *  Member のコンストラクタ
    *
    * @param id 11 桁の Slack user id
-   * @param name 名前(json, 暗号化)
-   * @param displayName 表示名(json, 暗号化)
+   * @param name 名前
+   * @param displayName 表示名
    * @param deleted 削除済み
    * @param imageUrl アバター画像 URL(null あり)
    */

@@ -8,10 +8,10 @@ export class Message {
   /** 11 桁の Slack user id  */
   public userId: string;
 
-  /** user name (暗号化) */
+  /** ユーザー名 */
   public userName: string;
 
-  /** メッセージ(暗号化,json) */
+  /** メッセージ */
   public text: string;
 
   /** リプライカウント */
@@ -50,8 +50,8 @@ export class Message {
    * @param ts メッセージのタイムスタンプ
    * @param created ts を変換した日時(yyyy-MM-dd HH:mm:ss)
    * @param userId 11 桁の Slack user id
-   * @param userName user name (暗号化)
-   * @param text メッセージ(暗号化,json)
+   * @param userName ユーザー名
+   * @param text メッセージ
    * @param replyCount リプライカウント
    * @param latestReplyTs 最新リプライのタイムスタンプ (ts)
    * @param latestReply latestReplyTs を変換した日時(yyyy-MM-dd HH:mm:ss)

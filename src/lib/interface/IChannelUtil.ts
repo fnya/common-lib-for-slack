@@ -1,1 +1,4 @@
-export interface IChannelUtil {}
+export interface IChannelUtil {
+  getMemberTargetChannelId(): string;
+  getReplyTargetChannelId(): string;
+}

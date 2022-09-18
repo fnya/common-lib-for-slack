@@ -10,6 +10,7 @@ import { SpreadSheetType } from '../types/SpreadSheetType';
 import PropertyType from '../types/PropertyType';
 import Types from '../types/Types';
 import { MessageStatus } from '../entity/MessageStatus';
+import { ReplyStatus } from '../entity/ReplyStatus';
 
 @injectable()
 export class ChannelUtil implements IChannelUtil {
@@ -31,7 +32,7 @@ export class ChannelUtil implements IChannelUtil {
   }
 
   /**
-   * ターゲットとなるチャンネルIDを取得する
+   * membersのターゲットとなるチャンネルIDを取得する
    *
    * @returns チャンネルID
    */
@@ -92,7 +93,71 @@ export class ChannelUtil implements IChannelUtil {
       }
     }
 
-    // チャンネルIDが取得できない場合はから文字を返す
+    // チャンネルIDが取得できない場合は空文字を返す
+    return channelId || '';
+  }
+
+  /**
+   * repliesのターゲットとなるチャンネルIDを取得する
+   *
+   * @returns チャンネルID
+   */
+  public getReplyTargetChannelId(): string {
+    // replyStatusをロードする
+    let replyStatuses: ReplyStatus[] = [];
+
+    if (
+      this.iSpreadSheetManager.exists(
+        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+        SpreadSheetType.RepliesStatus
+      )
+    ) {
+      const arrayReplyStatuses = this.iSpreadSheetManager.load(
+        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+        SpreadSheetType.RepliesStatus
+      );
+
+      replyStatuses =
+        this.iSlackTranslator.translateArraysToReplyStatus(arrayReplyStatuses);
+    }
+
+    // チャンネル一覧をロードする
+    const arrayChannels = this.iSpreadSheetManager.load(
+      this.iPropertyUtil.getProperty(PropertyType.MembersFolerId),
+      SpreadSheetType.Channels
+    );
+    const channels =
+      this.iSlackTranslator.translateArraysToChannels(arrayChannels);
+
+    // 現在年月日を取得する
+    const currentDateNumber = this.iDateUtil.getCurrentDateNumber(); // yyyyMMddの数値
+
+    let channelId;
+
+    for (const channel of channels) {
+      // replytatusに存在しないチャンネルIDは即座に返す
+      const replyStatusCount = replyStatuses.filter(
+        (replyStatus) => replyStatus.channelId === channel.id
+      ).length;
+
+      if (replyStatusCount === 0) {
+        channelId = channel.id;
+        break;
+      }
+
+      // 当日処理されていないチャンネルIDを取得する
+      channelId = replyStatuses.find(
+        (replyStatus) =>
+          replyStatus.channelId === channel.id &&
+          this.iDateUtil.createDateNumber(replyStatus.ts) < currentDateNumber
+      )?.channelId;
+
+      if (channelId) {
+        break;
+      }
+    }
+
+    // チャンネルIDが取得できない場合は空文字を返す
     return channelId || '';
   }
 }
