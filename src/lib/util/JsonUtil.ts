@@ -60,12 +60,22 @@ export class JsonUtil implements IJsonUtil {
    * @param folderId フォルダID
    * @param name JSON名(.jsonなし)
    * @param json json
+   * @param override json保存時に上書きするか(デフォルトtreue)
    */
-  public save(folderId: string, name: string, json: string): void {
+  public save(
+    folderId: string,
+    name: string,
+    json: string,
+    override: boolean = true
+  ): void {
     if (this.exists(folderId, name)) {
-      throw new Error(
-        `指定したJSONが存在します。フォルダID:${folderId}, JSON:${name}`
-      );
+      if (override) {
+        this.remove(folderId, name);
+      } else {
+        throw new Error(
+          `指定したJSONが存在します。フォルダID:${folderId}, JSON:${name}`
+        );
+      }
     }
 
     // コンテンツタイプ
@@ -81,5 +91,23 @@ export class JsonUtil implements IJsonUtil {
     );
     // ファイルに保存
     folder.createFile(blob);
+  }
+
+  /**
+   * JSON 削除
+   *
+   * @param folderId フォルダID
+   * @param name JSON名(.jsonなし)
+   */
+  public remove(folderId: string, name: string): void {
+    if (!this.exists(folderId, name)) {
+      throw new Error(
+        `指定したJSONが存在しません。フォルダID:${folderId}, JSON:${name}`
+      );
+    }
+
+    const folder = this.iGoogleDrive.getFolder(folderId);
+    const file = folder.getFilesByName(name).next();
+    folder.removeFile(file);
   }
 }

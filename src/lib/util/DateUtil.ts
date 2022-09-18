@@ -32,16 +32,52 @@ export class DateUtil implements IDateUtil {
   }
 
   /**
-   * 現在日文字列を作成する
+   * tsから年月日の数値を作成する
+   *
+   * @param ts ts
+   * @returns 年月日の数値
+   */
+  public createDateNumber(ts: string): number {
+    if (!ts) {
+      return 0;
+    }
+
+    const date = new Date(Number(ts) * 1000);
+
+    const dateNumber = Number(
+      date.getFullYear() +
+        this.paddingZero(date.getMonth() + 1, 2) +
+        this.paddingZero(date.getDate(), 2)
+    );
+
+    return dateNumber;
+  }
+
+  /**
+   * 現在日文字列を取得する
    *
    * @returns 現在日文字列(yyyyMMdd)
    */
-  public createCurrentDateString(ts: string): string {
+  public getCurrentDateString(): string {
     const date = new Date();
     return (
       date.getFullYear() +
       this.paddingZero(date.getMonth() + 1, 2) +
       this.paddingZero(date.getDate(), 2)
+    );
+  }
+
+  /**
+   * 現在年月日の数値を取得する
+   *
+   * @returns 現在年月日の数値
+   */
+  public getCurrentDateNumber(): Number {
+    const date = new Date();
+    return Number(
+      date.getFullYear() +
+        this.paddingZero(date.getMonth() + 1, 2) +
+        this.paddingZero(date.getDate(), 2)
     );
   }
 
@@ -56,5 +92,30 @@ export class DateUtil implements IDateUtil {
     return ('0'.repeat(paddingLength) + num.toString()).slice(
       paddingLength * -1
     );
+  }
+
+  /**
+   * 現在のTSを取得する
+   *
+   * @returns 現在のTS
+   */
+  public getCurrentTs(): string {
+    // 現在の指定年前の日付をUNIXタイムスタンプに変換
+    const currentDate = new Date();
+
+    return (currentDate.valueOf() / 1000).toString();
+  }
+
+  /**
+   * 90日前のTSを取得する
+   *
+   * @returns 90日前のTS
+   */
+  public getTsBefore90Days(): string {
+    // 現在の指定年前の日付をUNIXタイムスタンプに変換
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 90);
+
+    return (currentDate.valueOf() / 1000).toString();
   }
 }

@@ -6,14 +6,16 @@ import { Reply } from '../entity/Reply';
 import { Reaction } from '../entity/Reaction';
 import { File } from '../entity/File';
 import { Url } from '../entity/Url';
+import { MessageStatus } from '../entity/MessageStatus';
 import { IDateUtil } from '../interface/IDateUtil';
 import Types from '../types/Types';
+import { ISlackTranslator } from '../interface/ISlackTranslator';
 
 /**
  * Slack のデータを変換するクラス
  */
 @injectable()
-export class SlackTranslator {
+export class SlackTranslator implements ISlackTranslator {
   private iDateUtil: IDateUtil;
 
   public constructor(@inject(Types.IDateUtil) iDateUtil: IDateUtil) {
@@ -179,6 +181,23 @@ export class SlackTranslator {
   }
 
   /**
+   * 2次元配列をメッセージステータスの配列に変換する
+   *
+   * @param arrays 2次元配列
+   * @returns メッセージステータスの配列
+   */
+  public translateArraysToMessageStatus(arrays: string[][]): MessageStatus[] {
+    const messageStatuses: MessageStatus[] = [];
+
+    for (const array of arrays) {
+      const messageStatus = new MessageStatus(array[0], array[1], array[2]);
+      messageStatuses.push(messageStatus);
+    }
+
+    return messageStatuses;
+  }
+
+  /**
    * Slack APIのレスポンスをメッセージの配列に変換
    *
    * @param entities Slack APIのレスポンス
@@ -191,10 +210,19 @@ export class SlackTranslator {
     for (const entity of entities) {
       const created = this.iDateUtil.createDateTimeString(entity.ts);
       const userName = this.getMemberName(entity.user, members);
-      const json = JSON.stringify(entity);
+      const replyCount = entity.reply_count ? entity.reply_count : 0;
+      const latestReplyTs = entity.latest_reply ? entity.latest_reply : '';
+      const latestReply = entity.latest_reply
+        ? this.iDateUtil.createDateTimeString(entity.latest_reply)
+        : '';
+      const editedTs = entity.edited ? entity.edited.ts : '';
+      const edited = entity.edited
+        ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+        : '';
       const reactions = this.createReactions(entity);
       const files = this.createFiles(entity);
       const urls = this.createUrls(entity);
+      const json = JSON.stringify(entity);
 
       const message = new Message(
         entity.ts,
@@ -202,15 +230,15 @@ export class SlackTranslator {
         entity.user,
         userName,
         entity.text,
-        entity.reply_count ? entity.reply_count : 0,
-        !!entity.edited,
-        entity.edited ? entity.edited.ts : '',
-        entity.edited
-          ? this.iDateUtil.createDateTimeString(entity.edited.ts)
-          : '',
+        replyCount,
+        latestReplyTs,
+        latestReply,
         reactions,
         files,
         urls,
+        !!entity.edited,
+        editedTs,
+        edited,
         json
       );
 
@@ -247,12 +275,14 @@ export class SlackTranslator {
       array.push(message.userName);
       array.push(message.text);
       array.push(message.replyCount.toString());
-      array.push(String(message.isEdited));
-      array.push(message.editedTs);
-      array.push(message.edited);
+      array.push(message.latestReplyTs);
+      array.push(message.latestReply);
       array.push(message.reactions);
       array.push(message.files);
       array.push(message.urls);
+      array.push(String(message.isEdited));
+      array.push(message.editedTs);
+      array.push(message.edited);
       array.push(message.json);
 
       arrays.push(array);
@@ -278,13 +308,15 @@ export class SlackTranslator {
         array[3],
         array[4],
         Number(array[5]),
-        array[6] === 'true',
+        array[6],
         array[7],
         array[8],
         array[9],
         array[10],
-        array[11],
-        array[12]
+        array[11] === 'true',
+        array[12],
+        array[13],
+        array[14]
       );
       messages.push(message);
     }
@@ -323,53 +355,6 @@ export class SlackTranslator {
     }
 
     return arrays;
-  }
-
-  /**
-   * リアクションを作成する
-   *
-   * @param entity エンティティ
-   * @returns リアクション
-   */
-  private createReactions(entity: any): string {
-    const reactions: Reaction[] = [];
-
-    if (entity.reactions) {
-      for (const reaction of entity.reactions) {
-        const myReaction = new Reaction(reaction.name, reaction.count);
-        reactions.push(myReaction);
-      }
-    }
-
-    return JSON.stringify(reactions);
-  }
-
-  /**
-   * ファイル情報を作成する
-   *
-   * @param entity エンティティ
-   * @returns ファイル情報
-   */
-  private createFiles(entity: any): string {
-    const files: File[] = [];
-
-    if (entity.files) {
-      for (const file of entity.files) {
-        const created = this.iDateUtil.createDateTimeString(file.created);
-
-        const myFile = new File(
-          file.id,
-          created,
-          file.name,
-          file.mimetype,
-          file.filetype,
-          file.url_private_download
-        );
-        files.push(myFile);
-      }
-    }
-
-    return JSON.stringify(files);
   }
 
   /**
@@ -419,6 +404,53 @@ export class SlackTranslator {
       }
       return 0;
     });
+  }
+
+  /**
+   * リアクションを作成する
+   *
+   * @param entity エンティティ
+   * @returns リアクション
+   */
+  private createReactions(entity: any): string {
+    const reactions: Reaction[] = [];
+
+    if (entity.reactions) {
+      for (const reaction of entity.reactions) {
+        const myReaction = new Reaction(reaction.name, reaction.count);
+        reactions.push(myReaction);
+      }
+    }
+
+    return JSON.stringify(reactions);
+  }
+
+  /**
+   * ファイル情報を作成する
+   *
+   * @param entity エンティティ
+   * @returns ファイル情報
+   */
+  private createFiles(entity: any): string {
+    const files: File[] = [];
+
+    if (entity.files) {
+      for (const file of entity.files) {
+        const created = this.iDateUtil.createDateTimeString(file.created);
+
+        const myFile = new File(
+          file.id,
+          created,
+          file.name,
+          file.mimetype,
+          file.filetype,
+          file.url_private_download
+        );
+        files.push(myFile);
+      }
+    }
+
+    return JSON.stringify(files);
   }
 
   /**

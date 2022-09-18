@@ -12,7 +12,7 @@ export class SlackApiClient implements ISlackApiClient {
   private static SLACK_API_URL = 'https://slack.com/api/';
   private static MAX_PAGINATION = 10;
   private static LIMIT_PER_REQUEST = 1000;
-  private static OLDEST_MESSAGE_YEAR = 5; // メッセージを何年前から取得するか設定
+  private static OLDEST_MESSAGE_DAY = 90; // メッセージを何日前から取得するか設定
   private iPropertyUtil: IPropertyUtil;
   private iGoogleDrive: IGoogleDrive;
 
@@ -113,6 +113,13 @@ export class SlackApiClient implements ISlackApiClient {
     return replies.sort((a, b) => Number(a.ts) - Number(b.ts));
   }
 
+  /**
+   * ファイルをダウンロードする
+   *
+   * @param folderId フォルダID
+   * @param downloadUrl ダウンロードURL
+   * @param fileId ファイルID
+   */
   public downloadFile(
     folderId: string,
     downloadUrl: string,
@@ -156,13 +163,13 @@ export class SlackApiClient implements ISlackApiClient {
     let oldest: string;
 
     if (currentPage === 1) {
-      if (ts) {
+      if (ts && ts !== '') {
         oldest = ts;
       } else {
         // 現在の指定年前の日付をUNIXタイムスタンプに変換
         const currentDate = new Date();
-        currentDate.setFullYear(
-          currentDate.getFullYear() - SlackApiClient.OLDEST_MESSAGE_YEAR
+        currentDate.setDate(
+          currentDate.getDate() - SlackApiClient.OLDEST_MESSAGE_DAY
         );
         oldest = (currentDate.valueOf() / 1000).toString();
       }

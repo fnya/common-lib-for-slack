@@ -1,10 +1,11 @@
 /* eslint-disable no-undef */
 import { inject, injectable } from 'inversify';
 import { IGoogleDrive } from '../interface/IGoogleDrive';
+import { ISpreadSheetManager } from '../interface/ISpreadSheetManager';
 import Types from '../types/Types';
 
 @injectable()
-export class SpreadSheetManager {
+export class SpreadSheetManager implements ISpreadSheetManager {
   private iGoogleDrive: IGoogleDrive;
 
   public constructor(@inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive) {
@@ -76,7 +77,9 @@ export class SpreadSheetManager {
     const maxRow = activeSheet.getLastRow();
     const maxColumn = activeSheet.getLastColumn();
 
-    return activeSheet.getRange(1, 1, maxRow, maxColumn).getValues();
+    // データの先頭が=の場合は'を先頭に追加しているので、'を除外するために
+    // getValues() ではなく getDisplayValues() を使用している。
+    return activeSheet.getRange(1, 1, maxRow, maxColumn).getDisplayValues();
   }
 
   /**
@@ -87,17 +90,88 @@ export class SpreadSheetManager {
    * @param arrays 2次元配列
    */
   public save(folderId: string, sheetName: string, arrays: string[][]): void {
+    // スプレッドシートが存在しなければ作成する
+    this.createIfDoesNotExist(folderId, sheetName);
+
+    // アクティブシートを取得する
     const spreadSheet = this.getSpreadSheet(folderId, sheetName);
     const activeSheet = spreadSheet.getActiveSheet();
 
+    // 上書き保存する
     if (arrays.length > 0) {
-      // delete/insert
       activeSheet.clearContents();
       activeSheet
         .getRange(1, 1, arrays.length, arrays[0].length)
+        // 文字列形式にする
         .setNumberFormat('@')
-        .setValues(arrays);
+        // 文字列形式にしても先頭に=が入っていると計算式と判断されるので、先頭が=の場合は'を追加する
+        .setValues(this.addSingleQuoteToArrays(arrays));
     }
+  }
+
+  /**
+   * スプレッドシートをarraysで更新する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   * @param arrays 2次元配列
+   */
+  public update(folderId: string, sheetName: string, arrays: string[][]): void {
+    // スプレッドシートが存在しなければ作成する
+    this.createIfDoesNotExist(folderId, sheetName);
+
+    // アクティブシートを取得する
+    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    for (const array of arrays) {
+      // 検索準備
+      const maxRow =
+        activeSheet.getMaxRows() > 0 ? activeSheet.getMaxRows() : 1;
+      const textFinder = activeSheet
+        .getRange(1, 1, maxRow, 1)
+        .createTextFinder(array[0]);
+
+      // 検索を実行
+      const results = textFinder.findAll();
+
+      if (results.length > 0) {
+        // 見つかったら更新
+        activeSheet
+          .getRange(results[0].getRow(), 1, 1, array.length)
+          // 文字列形式にする
+          .setNumberFormat('@')
+          // 文字列形式にしても先頭に=が入っていると計算式と判断されるので、先頭が=の場合は'を追加する
+          .setValues(this.addSingleQuoteToArrays([array]));
+      } else {
+        // 見つからなかったら追加
+        activeSheet
+          .getRange(activeSheet.getLastRow() + 1, 1, 1, array.length)
+          // 文字列形式にする
+          .setNumberFormat('@')
+          // 文字列形式にしても先頭に=が入っていると計算式と判断されるので、先頭が=の場合は'を追加する
+          .setValues(this.addSingleQuoteToArrays([array]));
+      }
+    }
+  }
+
+  /**
+   * 最新のTSを取得する
+   *
+   * @param folderId フォルダID
+   * @param sheetName スプレッドシート名
+   * @returns 最新のTS
+   */
+  public getLatestTs(folderId: string, sheetName: string): string {
+    const spreadSheet = this.getSpreadSheet(folderId, sheetName);
+    const activeSheet = spreadSheet.getActiveSheet();
+    const maxRow = activeSheet.getLastRow();
+
+    if (maxRow < 1) {
+      return '';
+    }
+
+    return activeSheet.getRange(maxRow, 1).getValue();
   }
 
   /**
@@ -123,5 +197,30 @@ export class SpreadSheetManager {
     throw new Error(
       `指定したスプレッドシートは存在しません。フォルダID:${folderId},スプレッドシート:${sheetName}`
     );
+  }
+
+  /**
+   * 文字列の先頭が=の場合は'を先頭に追加する
+   *
+   * @param arrays 2次元配列
+   * @returns 2次元配列
+   */
+  private addSingleQuoteToArrays(arrays: string[][]): string[][] {
+    const myArrays: string[][] = [];
+
+    for (const array of arrays) {
+      const mySubArrays: string[] = [];
+
+      for (const subArray of array) {
+        if (subArray[0] === '=') {
+          mySubArrays.push("'" + subArray);
+        } else {
+          mySubArrays.push(subArray);
+        }
+      }
+      myArrays.push(mySubArrays);
+    }
+
+    return myArrays;
   }
 }

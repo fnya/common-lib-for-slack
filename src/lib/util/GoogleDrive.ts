@@ -91,4 +91,33 @@ export class GoogleDrive implements IGoogleDrive {
   public getFolder(folderId: string): GoogleAppsScript.Drive.Folder {
     return DriveApp.getFolderById(folderId);
   }
+
+  /**
+   * ファイルをバックアップする
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   */
+  public backupFile(folderId: string, fileName: string): void {
+    const folder = this.getFolder(folderId);
+    const it = folder.getFilesByName(fileName);
+
+    if (!it.hasNext()) {
+      throw new Error(
+        `指定したファイルは存在しません。 フォルダID:${folderId} ファイル名名:${fileName}`
+      );
+    }
+
+    const file = it.next();
+    const backupFileName = fileName + '_bk';
+
+    // 既にバックアップファイルがある場合は削除する
+    const itbk = folder.getFilesByName(backupFileName);
+    if (itbk.hasNext()) {
+      const backupFile = itbk.next();
+      folder.removeFile(backupFile);
+    }
+
+    file.makeCopy(backupFileName, folder);
+  }
 }

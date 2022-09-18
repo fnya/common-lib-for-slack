@@ -4,4 +4,5 @@ export interface IGoogleDrive {
   createFolder(folderId: string, folderName: string): void;
   createFolderOrGetFolderId(folderId: string, folderName: string): string;
   getFolder(folderId: string): GoogleAppsScript.Drive.Folder;
+  backupFile(folderId: string, fileName: string): void;
 }
