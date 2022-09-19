@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { injectable } from 'inversify';
 import PropertyType from '../types/PropertyType';
 import { IPropertyUtil } from '../interface/IPropertyUtil';
@@ -14,7 +15,6 @@ export class PropertyUtil implements IPropertyUtil {
    */
   public getProperty(propertyType: PropertyType): string {
     const property =
-      // eslint-disable-next-line no-undef
       PropertiesService.getScriptProperties().getProperty(propertyType);
 
     if (property) {
@@ -22,6 +22,26 @@ export class PropertyUtil implements IPropertyUtil {
     }
 
     throw new InvalidArgumentError('PropertyType の値が不正です');
+  }
+
+  /**
+   * Script Property 設定する
+   *
+   * @param propertyType PropertyType
+   * @param value プロパティの値
+   * @throw InvalidArgumentError
+   */
+  public setProperty(propertyType: PropertyType, value: string): void {
+    const property =
+      PropertiesService.getScriptProperties().getProperty(propertyType);
+
+    if (property) {
+      throw new InvalidArgumentError(
+        `PropertyType が既に設定されています。${propertyType}, ${value}`
+      );
+    }
+
+    PropertiesService.getScriptProperties().setProperty(propertyType, value);
   }
 }
 

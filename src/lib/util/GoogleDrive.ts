@@ -44,7 +44,7 @@ export class GoogleDrive implements IGoogleDrive {
   }
 
   /**
-   * 指定したフォルダIDの配下にフォルダ名が存在するか
+   * 指定したフォルダIDの配下にフォルダを作成する
    *
    * @param folderId フォルダID
    * @param folderName フォルダ名
@@ -119,5 +119,58 @@ export class GoogleDrive implements IGoogleDrive {
     }
 
     file.makeCopy(backupFileName, folder);
+  }
+
+  /**
+   * ルートフォルダの配下にフォルダ名が存在するか
+   *
+   * @param folderName フォルダ名
+   * @returns true: 存在する/false: 存在しない
+   */
+  public existFolderInRoot(folderName: string): boolean {
+    const it = DriveApp.getFoldersByName(folderName);
+
+    if (it.hasNext()) {
+      // 既に存在していた場合
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * ルート配下のフォルダIDを取得する
+   *
+   * @param folderName フォルダ名
+   * @returns フォルダID
+   */
+  public getFolderIdInRoot(folderName: string): string {
+    const it = DriveApp.getFoldersByName(folderName);
+
+    if (it.hasNext()) {
+      // 既に存在していた場合
+      return it.next().getId();
+    }
+
+    throw new Error(
+      `指定したフォルダはルートに存在しません。 フォルダ名:${folderName}`
+    );
+  }
+
+  /**
+   * ルートフォルダの配下にフォルダを作成する
+   *
+   * @param folderName フォルダ名
+   * @returns 作成したフォルダID
+   */
+  public createFolderInRoot(folderName: string): string {
+    if (this.existFolderInRoot(folderName)) {
+      // 既に存在していた場合
+      throw new Error(
+        `作成しようとしたフォルダは既にルートに存在しています。 フォルダ名:${folderName}`
+      );
+    }
+
+    return DriveApp.createFolder(folderName).getId();
   }
 }
