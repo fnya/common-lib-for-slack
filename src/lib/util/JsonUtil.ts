@@ -110,4 +110,14 @@ export class JsonUtil implements IJsonUtil {
     const file = folder.getFilesByName(name).next();
     folder.removeFile(file);
   }
+
+  /**
+   * Web API の JSON レスポンスを作成する
+   *
+   * @param json json
+   * @returns json レスポンス
+   */
+  public createJsonResponse(json: string): GoogleAppsScript.Content.TextOutput {
+    return ContentService.createTextOutput(json);
+  }
 }
