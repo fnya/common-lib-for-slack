@@ -1,21 +1,26 @@
-// injectされる側はIを付けない
 const Types = {
-  ICryptoUtil: Symbol.for('ICryptoUtil'),
-  IGoogleDrive: Symbol.for('IGoogleDrive'),
-  IPropertyUtil: Symbol.for('IPropertyUtil'),
-  ISpreadSheetManager: Symbol.for('ISpreadSheetManager'),
+  // インターフェース
+  IChannelUtil: Symbol.for('IChannelUtil'),
   IDateUtil: Symbol.for('IDateUtil'),
+  IGoogleDrive: Symbol.for('IGoogleDrive'),
+  IJsonUtil: Symbol.for('IJsonUtil'),
   ILogUtil: Symbol.for('ILogUtil'),
-  IStringUtil: Symbol.for('IStringUtil'),
+  IPropertyUtil: Symbol.for('IPropertyUtil'),
+  ISlackApiClient: Symbol.for('ISlackApiClient'),
   ISlackTranslator: Symbol.for('ISlackTranslator'),
+  ISpreadSheetManager: Symbol.for('ISpreadSheetManager'),
+  IStringUtil: Symbol.for('IStringUtil'),
+  // 実装
+  ChannelUtil: Symbol.for('ChannelUtil'),
+  DateUtil: Symbol.for('DateUtil'),
+  GoogleDrive: Symbol.for('GoogleDrive'),
+  JsonUtil: Symbol.for('JsonUtil'),
+  LogUtil: Symbol.for('LogUtil'),
+  PropertyUtil: Symbol.for('PropertyUtil'),
   SlackApiClient: Symbol.for('SlackApiClient'),
   SlackTranslator: Symbol.for('SlackTranslator'),
   SpreadSheetManager: Symbol.for('SpreadSheetManager'),
-  GoogleDrive: Symbol.for('GoogleDrive'),
-  JsonUtil: Symbol.for('JsonUtil'),
-  DateUtil: Symbol.for('DateUtil'),
-  PropertyUtil: Symbol.for('PropertyUtil'),
-  ChannelUtil: Symbol.for('ChannelUtil'),
+  StringUtil: Symbol.for('StringUtil'),
 };
 
 export default Types;

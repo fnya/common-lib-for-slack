@@ -4,10 +4,10 @@ const PropertyType = {
   AdminFolerId: 'AdminFolerId',
   SystemFolerId: 'SystemFolerId',
   LogFolerId: 'LogFolerId',
-  Version: 'Version',
-  CryptoKey: 'CryptoKey',
+  AuthVersion: 'AuthVersion',
   StretchingCount: 'StretchingCount',
   Pepper: 'Pepper',
+  JwtSecret: 'JwtSecret',
 } as const;
 
 // eslint-disable-next-line no-redeclare

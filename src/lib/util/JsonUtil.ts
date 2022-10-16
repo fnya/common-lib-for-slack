@@ -2,7 +2,6 @@
 import { inject, injectable } from 'inversify';
 import { IGoogleDrive } from '../interface/IGoogleDrive';
 import Types from '../types/Types';
-
 import { IJsonUtil } from '../interface/IJsonUtil';
 
 @injectable()
