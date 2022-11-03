@@ -2,11 +2,10 @@ export const SpreadSheetType = {
   Channels: 'channels',
   Members: 'members',
   Messages: 'messages',
-  Replies: 'replies',
-  UserAccount: 'userAccounts',
-  BasicAccount: 'basicAccount',
   MessageStatus: 'messageStatus',
+  Replies: 'replies',
   RepliesStatus: 'repliesStatus',
+  UserAccount: 'userAccounts',
 } as const;
 
 // eslint-disable-next-line no-redeclare

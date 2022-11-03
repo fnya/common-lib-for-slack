@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 import { injectable } from 'inversify';
 import PropertyType from '../types/PropertyType';
-import { IPropertyUtil } from '../interface/IPropertyUtil';
 
 @injectable()
-export class PropertyUtil implements IPropertyUtil {
+export class PropertyUtil {
   /**
    * Script Property を取得する
    *
@@ -30,7 +29,7 @@ export class PropertyUtil implements IPropertyUtil {
    * @returns true:存在する/false:存在しない
    */
   public exists(propertyType: PropertyType): boolean {
-    return !PropertiesService.getScriptProperties().getProperty(propertyType);
+    return !!PropertiesService.getScriptProperties().getProperty(propertyType);
   }
 
   /**

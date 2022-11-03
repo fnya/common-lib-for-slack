@@ -1,15 +1,14 @@
 /* eslint-disable no-undef */
+import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
-import { IGoogleDrive } from '../interface/IGoogleDrive';
 import Types from '../types/Types';
-import { IJsonUtil } from '../interface/IJsonUtil';
 
 @injectable()
-export class JsonUtil implements IJsonUtil {
-  private iGoogleDrive: IGoogleDrive;
+export class JsonUtil {
+  private googleDrive: GoogleDrive;
 
-  public constructor(@inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive) {
-    this.iGoogleDrive = iGoogleDrive;
+  constructor(@inject(Types.GoogleDrive) googleDrive: GoogleDrive) {
+    this.googleDrive = googleDrive;
   }
 
   /**
@@ -20,7 +19,7 @@ export class JsonUtil implements IJsonUtil {
    * @returns true:存在する/false:存在しない
    */
   public exists(folderId: string, name: string): boolean {
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const it = folder.getFilesByName(name);
 
     if (it.hasNext()) {
@@ -39,7 +38,7 @@ export class JsonUtil implements IJsonUtil {
    * @returns json
    */
   public load(folderId: string, name: string): string {
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const it = folder.getFilesByName(name);
 
     if (it.hasNext()) {
@@ -82,7 +81,7 @@ export class JsonUtil implements IJsonUtil {
     // 文字コード
     const charset = 'UTF-8';
     // 出力するフォルダ
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     // Blob を作成する
     const blob = Utilities.newBlob('', contentType, name).setDataFromString(
       json,
@@ -105,18 +104,8 @@ export class JsonUtil implements IJsonUtil {
       );
     }
 
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const file = folder.getFilesByName(name).next();
     folder.removeFile(file);
-  }
-
-  /**
-   * Web API の JSON レスポンスを作成する
-   *
-   * @param json json
-   * @returns json レスポンス
-   */
-  public createJsonResponse(json: string): GoogleAppsScript.Content.TextOutput {
-    return ContentService.createTextOutput(json);
   }
 }

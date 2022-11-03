@@ -1,27 +1,27 @@
 /* eslint-disable no-undef */
+import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
-import { ISlackApiClient } from '../interface/ISlackApiClient';
-import { IPropertyUtil } from '../interface/IPropertyUtil';
-import { IGoogleDrive } from '../interface/IGoogleDrive';
-import Types from '../types/Types';
-import PropertyType from '../types/PropertyType';
+import { PermissionTypes } from '../types/PermissionTypes';
 import { SlackApiType } from '../types/SlackApiType';
+import PropertyType from '../types/PropertyType';
+import PropertyUtil from './PropertyUtil';
+import Types from '../types/Types';
 
 @injectable()
-export class SlackApiClient implements ISlackApiClient {
+export class SlackApiClient {
   private static SLACK_API_URL = 'https://slack.com/api/';
   private static MAX_PAGINATION = 10;
   private static LIMIT_PER_REQUEST = 1000;
   private static OLDEST_MESSAGE_DAY = 90; // メッセージを何日前から取得するか設定
-  private iPropertyUtil: IPropertyUtil;
-  private iGoogleDrive: IGoogleDrive;
+  private propertyUtil: PropertyUtil;
+  private googleDrive: GoogleDrive;
 
   public constructor(
-    @inject(Types.IPropertyUtil) iPropertyUtil: IPropertyUtil,
-    @inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive
+    @inject(Types.PropertyUtil) propertyUtil: PropertyUtil,
+    @inject(Types.GoogleDrive) googleDrive: GoogleDrive
   ) {
-    this.iPropertyUtil = iPropertyUtil;
-    this.iGoogleDrive = iGoogleDrive;
+    this.propertyUtil = propertyUtil;
+    this.googleDrive = googleDrive;
   }
 
   /**
@@ -29,8 +29,9 @@ export class SlackApiClient implements ISlackApiClient {
    *
    * @returns チャンネル一覧
    */
-  public getChannels(): any[] {
-    const options = { types: 'public_channel,private_channel' };
+  public getChannels(permissions: PermissionTypes[]): any[] {
+    const permission = permissions.join(',');
+    const options = { types: permission };
     return this.getSlackApiData(SlackApiType.Channels, options).channels;
   }
 
@@ -135,7 +136,7 @@ export class SlackApiClient implements ISlackApiClient {
     const response = UrlFetchApp.fetch(downloadUrl, options);
     const blob = response.getBlob().setName(fileId);
 
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
 
     // 既にファイルが存在していたら削除
     const it = folder.getFilesByName(fileId);
@@ -303,6 +304,6 @@ export class SlackApiClient implements ISlackApiClient {
    * @returns スクリプトプロパティ
    */
   private getProperty(propertyType: PropertyType): string {
-    return this.iPropertyUtil.getProperty(propertyType);
+    return this.propertyUtil.getProperty(propertyType);
   }
 }

@@ -1,34 +1,31 @@
-/* eslint-disable no-undef */
+import { DateUtil } from './DateUtil';
 import { inject, injectable } from 'inversify';
-import { IChannelUtil } from '../interface/IChannelUtil';
-import { IDateUtil } from '../interface/IDateUtil';
-import { ISpreadSheetManager } from '../interface/ISpreadSheetManager';
-import { ISlackTranslator } from '../interface/ISlackTranslator';
-import { IPropertyUtil } from '../interface/IPropertyUtil';
-import { SpreadSheetType } from '../types/SpreadSheetType';
-
-import PropertyType from '../types/PropertyType';
-import Types from '../types/Types';
 import { MessageStatus } from '../entity/MessageStatus';
 import { ReplyStatus } from '../entity/ReplyStatus';
+import { SlackTranslator } from './SlackTranslator';
+import { SpreadSheetManager } from './SpreadSheetManager';
+import { SpreadSheetType } from '../types/SpreadSheetType';
+import PropertyType from '../types/PropertyType';
+import PropertyUtil from './PropertyUtil';
+import Types from '../types/Types';
 
 @injectable()
-export class ChannelUtil implements IChannelUtil {
-  private iDateUtil: IDateUtil;
-  private iSpreadSheetManager: ISpreadSheetManager;
-  private iPropertyUtil: IPropertyUtil;
-  private iSlackTranslator: ISlackTranslator;
+export class ChannelUtil {
+  private dateUtil: DateUtil;
+  private spreadSheetManager: SpreadSheetManager;
+  private propertyUtil: PropertyUtil;
+  private slackTranslator: SlackTranslator;
 
-  public constructor(
-    @inject(Types.IDateUtil) iDateUtil: IDateUtil,
-    @inject(Types.ISpreadSheetManager) iSpreadSheetManager: ISpreadSheetManager,
-    @inject(Types.IPropertyUtil) iPropertyUtil: IPropertyUtil,
-    @inject(Types.ISlackTranslator) iSlackTranslator: ISlackTranslator
+  constructor(
+    @inject(Types.DateUtil) dateUtil: DateUtil,
+    @inject(Types.SpreadSheetManager) spreadSheetManager: SpreadSheetManager,
+    @inject(Types.PropertyUtil) propertyUtil: PropertyUtil,
+    @inject(Types.SlackTranslator) slackTranslator: SlackTranslator
   ) {
-    this.iDateUtil = iDateUtil;
-    this.iSpreadSheetManager = iSpreadSheetManager;
-    this.iPropertyUtil = iPropertyUtil;
-    this.iSlackTranslator = iSlackTranslator;
+    this.dateUtil = dateUtil;
+    this.spreadSheetManager = spreadSheetManager;
+    this.propertyUtil = propertyUtil;
+    this.slackTranslator = slackTranslator;
   }
 
   /**
@@ -41,32 +38,32 @@ export class ChannelUtil implements IChannelUtil {
     let messageStatuses: MessageStatus[] = [];
 
     if (
-      this.iSpreadSheetManager.exists(
-        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+      this.spreadSheetManager.exists(
+        this.propertyUtil.getProperty(PropertyType.SystemFolerId),
         SpreadSheetType.MessageStatus
       )
     ) {
-      const arrayMessageStatuses = this.iSpreadSheetManager.load(
-        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+      const arrayMessageStatuses = this.spreadSheetManager.load(
+        this.propertyUtil.getProperty(PropertyType.SystemFolerId),
         SpreadSheetType.MessageStatus
       );
 
       messageStatuses =
-        this.iSlackTranslator.translateArraysToMessageStatus(
+        this.slackTranslator.translateArraysToMessageStatus(
           arrayMessageStatuses
         );
     }
 
     // チャンネル一覧をロードする
-    const arrayChannels = this.iSpreadSheetManager.load(
-      this.iPropertyUtil.getProperty(PropertyType.MembersFolerId),
+    const arrayChannels = this.spreadSheetManager.load(
+      this.propertyUtil.getProperty(PropertyType.MembersFolerId),
       SpreadSheetType.Channels
     );
     const channels =
-      this.iSlackTranslator.translateArraysToChannels(arrayChannels);
+      this.slackTranslator.translateArraysToChannels(arrayChannels);
 
     // 現在年月日を取得する
-    const currentDateNumber = this.iDateUtil.getCurrentDateNumber(); // yyyyMMddの数値
+    const currentDateNumber = this.dateUtil.getCurrentDateNumber(); // yyyyMMddの数値
 
     let channelId;
 
@@ -85,7 +82,7 @@ export class ChannelUtil implements IChannelUtil {
       channelId = messageStatuses.find(
         (messageStatus) =>
           messageStatus.channelId === channel.id &&
-          this.iDateUtil.createDateNumber(messageStatus.ts) < currentDateNumber
+          this.dateUtil.createDateNumber(messageStatus.ts) < currentDateNumber
       )?.channelId;
 
       if (channelId) {
@@ -107,30 +104,30 @@ export class ChannelUtil implements IChannelUtil {
     let replyStatuses: ReplyStatus[] = [];
 
     if (
-      this.iSpreadSheetManager.exists(
-        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+      this.spreadSheetManager.exists(
+        this.propertyUtil.getProperty(PropertyType.SystemFolerId),
         SpreadSheetType.RepliesStatus
       )
     ) {
-      const arrayReplyStatuses = this.iSpreadSheetManager.load(
-        this.iPropertyUtil.getProperty(PropertyType.SystemFolerId),
+      const arrayReplyStatuses = this.spreadSheetManager.load(
+        this.propertyUtil.getProperty(PropertyType.SystemFolerId),
         SpreadSheetType.RepliesStatus
       );
 
       replyStatuses =
-        this.iSlackTranslator.translateArraysToReplyStatus(arrayReplyStatuses);
+        this.slackTranslator.translateArraysToReplyStatus(arrayReplyStatuses);
     }
 
     // チャンネル一覧をロードする
-    const arrayChannels = this.iSpreadSheetManager.load(
-      this.iPropertyUtil.getProperty(PropertyType.MembersFolerId),
+    const arrayChannels = this.spreadSheetManager.load(
+      this.propertyUtil.getProperty(PropertyType.MembersFolerId),
       SpreadSheetType.Channels
     );
     const channels =
-      this.iSlackTranslator.translateArraysToChannels(arrayChannels);
+      this.slackTranslator.translateArraysToChannels(arrayChannels);
 
     // 現在年月日を取得する
-    const currentDateNumber = this.iDateUtil.getCurrentDateNumber(); // yyyyMMddの数値
+    const currentDateNumber = this.dateUtil.getCurrentDateNumber(); // yyyyMMddの数値
 
     let channelId;
 
@@ -149,7 +146,7 @@ export class ChannelUtil implements IChannelUtil {
       channelId = replyStatuses.find(
         (replyStatus) =>
           replyStatus.channelId === channel.id &&
-          this.iDateUtil.createDateNumber(replyStatus.ts) < currentDateNumber
+          this.dateUtil.createDateNumber(replyStatus.ts) < currentDateNumber
       )?.channelId;
 
       if (channelId) {

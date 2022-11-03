@@ -1,26 +1,25 @@
-import { inject, injectable } from 'inversify';
 import { Channel } from '../entity/Channel';
+import { DateUtil } from './DateUtil';
+import { File } from '../entity/File';
+import { inject, injectable } from 'inversify';
 import { Member } from '../entity/Member';
 import { Message } from '../entity/Message';
-import { Reply } from '../entity/Reply';
-import { Reaction } from '../entity/Reaction';
-import { File } from '../entity/File';
-import { Url } from '../entity/Url';
 import { MessageStatus } from '../entity/MessageStatus';
-import { IDateUtil } from '../interface/IDateUtil';
-import Types from '../types/Types';
-import { ISlackTranslator } from '../interface/ISlackTranslator';
+import { Reaction } from '../entity/Reaction';
+import { Reply } from '../entity/Reply';
 import { ReplyStatus } from '../entity/ReplyStatus';
+import { Url } from '../entity/Url';
+import Types from '../types/Types';
 
 /**
  * Slack のデータを変換するクラス
  */
 @injectable()
-export class SlackTranslator implements ISlackTranslator {
-  private iDateUtil: IDateUtil;
+export class SlackTranslator {
+  private dateUtil: DateUtil;
 
-  public constructor(@inject(Types.IDateUtil) iDateUtil: IDateUtil) {
-    this.iDateUtil = iDateUtil;
+  public constructor(@inject(Types.DateUtil) dateUtil: DateUtil) {
+    this.dateUtil = dateUtil;
   }
 
   /**
@@ -226,16 +225,16 @@ export class SlackTranslator implements ISlackTranslator {
     const messages: Message[] = [];
 
     for (const entity of entities) {
-      const created = this.iDateUtil.createDateTimeString(entity.ts);
+      const created = this.dateUtil.createDateTimeString(entity.ts);
       const userName = this.getMemberName(entity.user, members);
       const replyCount = entity.reply_count ? entity.reply_count : 0;
       const latestReplyTs = entity.latest_reply ? entity.latest_reply : '';
       const latestReply = entity.latest_reply
-        ? this.iDateUtil.createDateTimeString(entity.latest_reply)
+        ? this.dateUtil.createDateTimeString(entity.latest_reply)
         : '';
       const editedTs = entity.edited ? entity.edited.ts : '';
       const edited = entity.edited
-        ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+        ? this.dateUtil.createDateTimeString(entity.edited.ts)
         : '';
       const reactions = this.createReactions(entity);
       const files = this.createFiles(entity);
@@ -285,7 +284,7 @@ export class SlackTranslator implements ISlackTranslator {
 
     for (const message of messages) {
       const array: string[] = [];
-      const created = this.iDateUtil.createDateTimeString(message.ts);
+      const created = this.dateUtil.createDateTimeString(message.ts);
 
       array.push(message.ts);
       array.push(created);
@@ -353,7 +352,7 @@ export class SlackTranslator implements ISlackTranslator {
 
     for (const reply of replies) {
       const array: string[] = [];
-      const created = this.iDateUtil.createDateTimeString(reply.ts);
+      const created = this.dateUtil.createDateTimeString(reply.ts);
 
       array.push(reply.ts);
       array.push(created);
@@ -385,7 +384,7 @@ export class SlackTranslator implements ISlackTranslator {
     const replies: Reply[] = [];
 
     for (const entity of entities) {
-      const created = this.iDateUtil.createDateTimeString(entity.ts);
+      const created = this.dateUtil.createDateTimeString(entity.ts);
       const userName = this.getMemberName(entity.user, members);
       const json = JSON.stringify(entity);
       const reactions = this.createReactions(entity);
@@ -393,7 +392,7 @@ export class SlackTranslator implements ISlackTranslator {
       const urls = this.createUrls(entity);
       const editedTs = entity.edited ? entity.edited.ts : '';
       const edited = entity.edited
-        ? this.iDateUtil.createDateTimeString(entity.edited.ts)
+        ? this.dateUtil.createDateTimeString(entity.edited.ts)
         : '';
 
       const reply = new Reply(
@@ -456,7 +455,7 @@ export class SlackTranslator implements ISlackTranslator {
 
     if (entity.files) {
       for (const file of entity.files) {
-        const created = this.iDateUtil.createDateTimeString(file.created);
+        const created = this.dateUtil.createDateTimeString(file.created);
 
         const myFile = new File(
           file.id,

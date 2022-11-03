@@ -1,15 +1,14 @@
 /* eslint-disable no-undef */
+import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
-import { IGoogleDrive } from '../interface/IGoogleDrive';
-import { ISpreadSheetManager } from '../interface/ISpreadSheetManager';
 import Types from '../types/Types';
 
 @injectable()
-export class SpreadSheetManager implements ISpreadSheetManager {
-  private iGoogleDrive: IGoogleDrive;
+export class SpreadSheetManager {
+  private googleDrive: GoogleDrive;
 
-  public constructor(@inject(Types.IGoogleDrive) iGoogleDrive: IGoogleDrive) {
-    this.iGoogleDrive = iGoogleDrive;
+  public constructor(@inject(Types.GoogleDrive) googleDrive: GoogleDrive) {
+    this.googleDrive = googleDrive;
   }
 
   /**
@@ -20,7 +19,7 @@ export class SpreadSheetManager implements ISpreadSheetManager {
    * @returns true:存在する/false:存在しない
    */
   public exists(folderId: string, sheetName: string): boolean {
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {
@@ -38,7 +37,7 @@ export class SpreadSheetManager implements ISpreadSheetManager {
    * @param sheetName スプレッドシート名
    */
   public create(folderId: string, sheetName: string): void {
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {
@@ -185,7 +184,7 @@ export class SpreadSheetManager implements ISpreadSheetManager {
     folderId: string,
     sheetName: string
   ): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    const folder = this.iGoogleDrive.getFolder(folderId);
+    const folder = this.googleDrive.getFolder(folderId);
     const it = folder.getFilesByName(sheetName);
 
     if (it.hasNext()) {

@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 import { injectable } from 'inversify';
-import { IGoogleDrive } from '../interface/IGoogleDrive';
 
 @injectable()
-export class GoogleDrive implements IGoogleDrive {
+export class GoogleDrive {
   /**
    * 指定したフォルダIDの配下にフォルダ名が存在するか
    *

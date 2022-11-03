@@ -1,13 +1,14 @@
 const PropertyType = {
-  SlackApiToken: 'SlackApiToken',
-  MembersFolerId: 'MembersFolerId',
   AdminFolerId: 'AdminFolerId',
-  SystemFolerId: 'SystemFolerId',
-  LogFolerId: 'LogFolerId',
   AuthVersion: 'AuthVersion',
-  StretchingCount: 'StretchingCount',
-  Pepper: 'Pepper',
   JwtSecret: 'JwtSecret',
+  LogFolerId: 'LogFolerId',
+  MembersFolerId: 'MembersFolerId',
+  Pepper: 'Pepper',
+  SlackApiToken: 'SlackApiToken',
+  SlackFolerId: 'SlackFolerId',
+  StretchingCount: 'StretchingCount',
+  SystemFolerId: 'SystemFolerId',
 } as const;
 
 // eslint-disable-next-line no-redeclare

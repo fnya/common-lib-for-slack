@@ -1,9 +1,7 @@
-/* eslint-disable no-undef */
 import { injectable } from 'inversify';
-import { IDateUtil } from '../interface/IDateUtil';
 
 @injectable()
-export class DateUtil implements IDateUtil {
+export class DateUtil {
   /**
    * tsから日時文字列を作成する
    *

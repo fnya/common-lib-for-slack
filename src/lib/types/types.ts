@@ -1,16 +1,4 @@
 const Types = {
-  // インターフェース
-  IChannelUtil: Symbol.for('IChannelUtil'),
-  IDateUtil: Symbol.for('IDateUtil'),
-  IGoogleDrive: Symbol.for('IGoogleDrive'),
-  IJsonUtil: Symbol.for('IJsonUtil'),
-  ILogUtil: Symbol.for('ILogUtil'),
-  IPropertyUtil: Symbol.for('IPropertyUtil'),
-  ISlackApiClient: Symbol.for('ISlackApiClient'),
-  ISlackTranslator: Symbol.for('ISlackTranslator'),
-  ISpreadSheetManager: Symbol.for('ISpreadSheetManager'),
-  IStringUtil: Symbol.for('IStringUtil'),
-  // 実装
   ChannelUtil: Symbol.for('ChannelUtil'),
   DateUtil: Symbol.for('DateUtil'),
   GoogleDrive: Symbol.for('GoogleDrive'),

@@ -1,11 +1,11 @@
 export const FolderType = {
-  Messages: 'messages',
+  Admin: 'admin',
   Files: 'files',
   Json: 'json',
   Logs: 'logs',
-  Slack: 'slack',
   Members: 'members',
-  Admin: 'admin',
+  Messages: 'messages',
+  Slack: 'slack',
   System: 'system',
 } as const;
 
