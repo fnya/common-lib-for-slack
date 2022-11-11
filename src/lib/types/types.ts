@@ -2,7 +2,6 @@ const Types = {
   ChannelUtil: Symbol.for('ChannelUtil'),
   DateUtil: Symbol.for('DateUtil'),
   GoogleDrive: Symbol.for('GoogleDrive'),
-  JsonUtil: Symbol.for('JsonUtil'),
   LogUtil: Symbol.for('LogUtil'),
   PropertyUtil: Symbol.for('PropertyUtil'),
   SlackApiClient: Symbol.for('SlackApiClient'),

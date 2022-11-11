@@ -23,6 +23,103 @@ export class GoogleDrive {
   }
 
   /**
+   * 指定したフォルダIDの配下にファイル名が存在するか
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   * @returns true: 存在する/false: 存在しない
+   */
+  public existFile(folderId: string, fileName: string): boolean {
+    const folder = this.getFolder(folderId);
+    const it = folder.getFilesByName(fileName);
+
+    if (it.hasNext()) {
+      // 既に存在していた場合
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Blobを取得し文字列に変換して返す
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   * @returns Blobの文字列
+   */
+  public getBlobAsString(folderId: string, fileName: string): string {
+    // ファイルが存在しない場合はエラー
+    if (!this.existFile(folderId, fileName)) {
+      throw new Error(
+        `指定したファイルは存在しません。フォルダID:${folderId}, ファイル名:${fileName}`
+      );
+    }
+
+    const folder = this.getFolder(folderId);
+    const it = folder.getFilesByName(fileName);
+    const file = it.next();
+    return file.getBlob().getDataAsString('utf8');
+  }
+
+  /**
+   * 文字列をBlobとして保存する
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   * @param text 文字列
+   * @param override 強制上書き(true:強制上書き(デフォルト)/false:既存在の場合エラー)
+   */
+  public savaBlobFromString(
+    folderId: string,
+    fileName: string,
+    text: string,
+    override: boolean = true
+  ): void {
+    if (this.existFile(folderId, fileName)) {
+      if (override) {
+        this.removeFile(folderId, fileName);
+      } else {
+        throw new Error(
+          `指定したファイルが存在します。フォルダID:${folderId}, ファイル名${fileName}`
+        );
+      }
+    }
+
+    // コンテンツタイプ
+    const contentType = 'application/json';
+    // 文字コード
+    const charset = 'UTF-8';
+    // 出力するフォルダ
+    const folder = this.getFolder(folderId);
+    // Blob を作成する
+    const blob = Utilities.newBlob('', contentType, fileName).setDataFromString(
+      text,
+      charset
+    );
+    // ファイルに保存
+    folder.createFile(blob);
+  }
+
+  /**
+   * 指定したファイルを削除する
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   */
+  public removeFile(folderId: string, fileName: string): void {
+    if (!this.existFile(folderId, fileName)) {
+      throw new Error(
+        `指定したファイルが存在しません。フォルダID:${folderId}, ファイル名:${fileName}`
+      );
+    }
+
+    const folder = this.getFolder(folderId);
+    const file = folder.getFilesByName(fileName).next();
+    folder.removeFile(file);
+  }
+
+  /**
    * 指定したフォルダID配下のフォルダIDを取得する
    *
    * @param folderId フォルダID
