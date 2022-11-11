@@ -4,27 +4,19 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "module": "commonjs",
-    // "module": "system", // これを指定するとこの lib のソースがビルドされない
-    //
-    // outFile は module が system である必要がある。
-    // ts-loader を参照元が使っている時、指定がないとビルドエラーになる
-    // "outFile": "./dist/index.js",
     "downlevelIteration": true,
     "strict": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    // 共通ライブラリは以下を設定する
-    "declaration": true, // type を作成
+    "declaration": true,
     "declarationMap": true,
-    "composite": true, // 参照可
-    // InversifyJS に不足しているものを設定
+    "composite": true,
     "lib": ["es6", "dom"],
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  // 共通ライブラリは以下を設定する
   "references": [],
   "include": ["./src/**/*", "./node_modules/@types/google-apps-script/**/*"]
 }

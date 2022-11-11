@@ -33,7 +33,7 @@ export class ChannelUtil {
    *
    * @returns チャンネルID
    */
-  public getMemberTargetChannelId(): string {
+  public getMessageTargetChannelId(): string {
     // messageStatusをロードする
     let messageStatuses: MessageStatus[] = [];
 

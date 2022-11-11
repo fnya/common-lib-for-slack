@@ -6,13 +6,9 @@ export class DateUtil {
    * tsから日時文字列を作成する
    *
    * @param ts ts
-   * @returns 日時文字列
+   * @returns 日時文字列(yyyy-MM-dd HH:mm:ss)
    */
   public createDateTimeString(ts: string): string {
-    if (!ts) {
-      return '';
-    }
-
     const date = new Date(Number(ts) * 1000);
     return (
       date.getFullYear() +
@@ -33,13 +29,9 @@ export class DateUtil {
    * tsから年月日の数値を作成する
    *
    * @param ts ts
-   * @returns 年月日の数値
+   * @returns 年月日の数値(yyyyMMdd)
    */
   public createDateNumber(ts: string): number {
-    if (!ts) {
-      return 0;
-    }
-
     const date = new Date(Number(ts) * 1000);
 
     const dateNumber = Number(
@@ -68,7 +60,7 @@ export class DateUtil {
   /**
    * 現在年月日の数値を取得する
    *
-   * @returns 現在年月日の数値
+   * @returns 現在年月日の数値(yyyyMMdd)
    */
   public getCurrentDateNumber(): Number {
     const date = new Date();
@@ -80,7 +72,7 @@ export class DateUtil {
   }
 
   /**
-   * 数値を前ゼロを付与する
+   * 数値に前ゼロを付与する
    *
    * @param num 数値
    * @param paddingLength 前ゼロ桁数

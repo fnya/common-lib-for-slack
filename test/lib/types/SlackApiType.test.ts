@@ -1,4 +1,5 @@
 import { SlackApiType } from '../../../src/lib/types/SlackApiType';
+import { describe, test, expect } from '@jest/globals';
 
 describe('SlackApiType のテスト', () => {
   test('SlackApiType が正しい', () => {

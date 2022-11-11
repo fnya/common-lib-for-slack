@@ -1,10 +1,10 @@
 const PropertyType = {
   AdminFolerId: 'AdminFolerId',
   AuthVersion: 'AuthVersion',
-  JwtSecret: 'JwtSecret',
   LogFolerId: 'LogFolerId',
   MembersFolerId: 'MembersFolerId',
   Pepper: 'Pepper',
+  RefreshTokenEffectiveDays: 'RefreshTokenEffectiveDays',
   SlackApiToken: 'SlackApiToken',
   SlackFolerId: 'SlackFolerId',
   StretchingCount: 'StretchingCount',
