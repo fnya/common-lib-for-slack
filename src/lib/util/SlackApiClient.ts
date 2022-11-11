@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
 import { PermissionTypes } from '../types/PermissionTypes';
 import { SlackApiType } from '../types/SlackApiType';
+import { UrlFetchAppUtil } from './UrlFetchAppUtil';
 import PropertyType from '../types/PropertyType';
 import PropertyUtil from './PropertyUtil';
 import Types from '../types/Types';
@@ -14,14 +14,14 @@ export class SlackApiClient {
   private static LIMIT_PER_REQUEST = 1000;
   private static OLDEST_MESSAGE_DAY = 90; // メッセージを何日前から取得するか設定
   private propertyUtil: PropertyUtil;
-  private googleDrive: GoogleDrive;
+  private urlFetchAppUtil: UrlFetchAppUtil;
 
-  public constructor(
+  constructor(
     @inject(Types.PropertyUtil) propertyUtil: PropertyUtil,
-    @inject(Types.GoogleDrive) googleDrive: GoogleDrive
+    @inject(Types.UrlFetchAppUtil) urlFetchAppUtil: UrlFetchAppUtil
   ) {
     this.propertyUtil = propertyUtil;
-    this.googleDrive = googleDrive;
+    this.urlFetchAppUtil = urlFetchAppUtil;
   }
 
   /**
@@ -100,9 +100,6 @@ export class SlackApiClient {
         this.createRepliesOptions(channelId, parentTs, oldest)
       );
 
-      // 0.5秒ウェイト
-      Utilities.sleep(500);
-
       // 親スレッドの内容を削除する
       response.messages.shift();
 
@@ -115,16 +112,16 @@ export class SlackApiClient {
   }
 
   /**
-   * ファイルをダウンロードする
+   * 添付ファイルをダウンロードする
    *
    * @param folderId フォルダID
    * @param downloadUrl ダウンロードURL
-   * @param fileId ファイルID
+   * @param fileName ファイル名
    */
   public downloadFile(
     folderId: string,
     downloadUrl: string,
-    fileId: string
+    fileName: string
   ): void {
     const options = {
       headers: {
@@ -132,20 +129,7 @@ export class SlackApiClient {
       },
     };
 
-    // ファイル取得
-    const response = UrlFetchApp.fetch(downloadUrl, options);
-    const blob = response.getBlob().setName(fileId);
-
-    const folder = this.googleDrive.getFolder(folderId);
-
-    // 既にファイルが存在していたら削除
-    const it = folder.getFilesByName(fileId);
-    if (it.hasNext()) {
-      folder.removeFile(it.next());
-    }
-
-    // ファイル作成
-    folder.createFile(blob);
+    this.urlFetchAppUtil.downloadFile(downloadUrl, options, folderId, fileName);
   }
 
   /**
@@ -257,17 +241,7 @@ export class SlackApiClient {
       },
     };
 
-    // eslint-disable-next-line no-undef
-    const response = UrlFetchApp.fetch(url, options);
-    const data = JSON.parse(response.getContentText());
-
-    if (data.error) {
-      throw new Error(
-        `Slack API の呼び出しに失敗しました。 error: ${data.error}`
-      );
-    }
-
-    return data;
+    return this.urlFetchAppUtil.getContent(url, options);
   }
 
   /**

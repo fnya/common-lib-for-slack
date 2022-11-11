@@ -8,6 +8,7 @@ const Types = {
   SlackTranslator: Symbol.for('SlackTranslator'),
   SpreadSheetManager: Symbol.for('SpreadSheetManager'),
   StringUtil: Symbol.for('StringUtil'),
+  UrlFetchAppUtil: Symbol.for('UrlFetchAppUtil'),
 };
 
 export default Types;
