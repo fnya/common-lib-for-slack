@@ -56,6 +56,7 @@ export class SlackApiClient {
     let response: any = {};
     let currentPage = 1;
 
+    // 1回目を通すために !('has_more' in response) を定義
     while (
       (!('has_more' in response) || response.has_more) &&
       currentPage <= SlackApiClient.MAX_PAGINATION
@@ -77,7 +78,7 @@ export class SlackApiClient {
   }
 
   /**
-   * リプライ一覧を取得する(全件取得し直し)
+   * リプライ一覧を取得する
    *
    * @param channelId チャンネルID
    * @param parentTs 親スレッドのタイムスタンプ
@@ -88,6 +89,7 @@ export class SlackApiClient {
     let response: any = {};
     let currentPage = 1;
 
+    // 1回目を通すために !('has_more' in response) を定義
     while (
       (!('has_more' in response) || response.has_more) &&
       currentPage <= SlackApiClient.MAX_PAGINATION
