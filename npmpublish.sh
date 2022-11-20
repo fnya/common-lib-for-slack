@@ -1,12 +1,15 @@
 #!/bin/sh
-
 npm login
 
 rm -rf dist
 
+mkdir dist
+
 tsc --build
 
 cp package.json dist
+
+cd dist
 
 npm publish --access=public
 
