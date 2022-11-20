@@ -1,7 +1,7 @@
 {
   "name": "@fnya/common-lib-for-slack",
-  "version": "0.0.1",
-  "description": "Viewr for Slack の共通ライブラリ",
+  "version": "0.0.2",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest",
