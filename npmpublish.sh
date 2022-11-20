@@ -8,7 +8,7 @@ tsc --build
 
 cp package.json dist
 
-npm publish
+npm publish --access=public
 
 cd ..
 

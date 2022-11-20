@@ -1,1 +1,1 @@
-# common-lib-for-slack
+# @fnya/common-lib-for-slack
