@@ -9,10 +9,13 @@ export class Member {
   public displayName: string;
 
   /** アバター画像 URL(null あり) */
-  public imageUrl?: string;
+  public imageUrl: string | null | undefined;
 
   /** 削除済み */
   public deleted: boolean;
+
+  /** botか */
+  public isBot: boolean;
 
   /**
    *  Member のコンストラクタ
@@ -21,6 +24,7 @@ export class Member {
    * @param name 名前
    * @param displayName 表示名
    * @param deleted 削除済み
+   * @param isBot botか
    * @param imageUrl アバター画像 URL(null あり)
    */
   public constructor(
@@ -28,12 +32,14 @@ export class Member {
     name: string,
     displayName: string,
     deleted: boolean,
-    imageUrl?: string
+    isBot: boolean,
+    imageUrl: string | null | undefined
   ) {
     this.id = id;
     this.name = name;
     this.displayName = displayName;
     this.deleted = deleted;
+    this.isBot = isBot;
     this.imageUrl = imageUrl;
   }
 }

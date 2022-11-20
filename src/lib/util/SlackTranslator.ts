@@ -109,16 +109,12 @@ export class SlackTranslator {
     const members: Member[] = [];
 
     for (const entity of entities) {
-      // bot はスキップ
-      if (entity.is_bot) {
-        continue;
-      }
-
       const member = new Member(
         entity.id,
         entity.name,
         entity.profile.display_name,
         entity.deleted,
+        entity.is_bot,
         entity.profile.image_original
       );
       members.push(member);
@@ -151,6 +147,7 @@ export class SlackTranslator {
       array.push(member.displayName);
       array.push(String(member.deleted));
       array.push(member.imageUrl ? member.imageUrl : '');
+      array.push(String(member.isBot));
       arrays.push(array);
     }
 
@@ -172,7 +169,8 @@ export class SlackTranslator {
         array[1],
         array[2],
         array[3] === 'true',
-        array[4]
+        array[5] === 'true',
+        array[4] === '' ? null : array[4]
       );
       members.push(member);
     }
@@ -342,39 +340,6 @@ export class SlackTranslator {
   }
 
   /**
-   * リプライの配列を2次元配列に変換する
-   *
-   * @param replies リプライの配列
-   * @returns リプライの2次元配列
-   */
-  public translateRepliesToArrays(replies: Reply[]): string[][] {
-    const arrays: string[][] = [];
-
-    for (const reply of replies) {
-      const array: string[] = [];
-      const created = this.dateUtil.createDateTimeString(reply.ts);
-
-      array.push(reply.ts);
-      array.push(created);
-      array.push(reply.userId);
-      array.push(reply.userName);
-      array.push(reply.text);
-      array.push(reply.treadTs);
-      array.push(reply.reactions);
-      array.push(reply.files);
-      array.push(reply.urls);
-      array.push(String(reply.isEdited));
-      array.push(reply.editedTs);
-      array.push(reply.edited);
-      array.push(reply.json);
-
-      arrays.push(array);
-    }
-
-    return arrays;
-  }
-
-  /**
    * Slack APIのレスポンスをリプライの配列に変換
    *
    * @param entities Slack APIのレスポンス
@@ -423,6 +388,69 @@ export class SlackTranslator {
       }
       return 0;
     });
+  }
+
+  /**
+   * リプライの配列を2次元配列に変換する
+   *
+   * @param replies リプライの配列
+   * @returns リプライの2次元配列
+   */
+  public translateRepliesToArrays(replies: Reply[]): string[][] {
+    const arrays: string[][] = [];
+
+    for (const reply of replies) {
+      const array: string[] = [];
+
+      array.push(reply.ts);
+      array.push(reply.created);
+      array.push(reply.userId);
+      array.push(reply.userName);
+      array.push(reply.text);
+      array.push(reply.treadTs);
+      array.push(reply.reactions);
+      array.push(reply.files);
+      array.push(reply.urls);
+      array.push(String(reply.isEdited));
+      array.push(reply.editedTs);
+      array.push(reply.edited);
+      array.push(reply.json);
+
+      arrays.push(array);
+    }
+
+    return arrays;
+  }
+
+  /**
+   * 2次元配列をリプライの配列に変換する
+   *
+   * @param arrays 2次元配列
+   * @returns リプライの配列
+   */
+  public translateArraysToReplies(arrays: string[][]): Reply[] {
+    const replies: Reply[] = [];
+
+    for (const array of arrays) {
+      const reply = new Reply(
+        array[0],
+        array[1],
+        array[2],
+        array[3],
+        array[4],
+        array[5],
+        array[6],
+        array[7],
+        array[8],
+        array[9] === 'true',
+        array[10],
+        array[11],
+        array[12]
+      );
+      replies.push(reply);
+    }
+
+    return replies;
   }
 
   /**
@@ -505,13 +533,13 @@ export class SlackTranslator {
   private getMemberName(id: string, members: Member[]): string {
     const displayName = members.find((member) => member.id === id)?.displayName;
 
-    if (displayName) {
+    if (displayName && displayName !== '') {
       return displayName;
     }
 
     const name = members.find((member) => member.id === id)?.name;
 
-    if (name) {
+    if (name && name !== '') {
       return name;
     }
 

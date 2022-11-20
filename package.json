@@ -4,7 +4,8 @@
   "description": "Viewr for Slack の共通ライブラリ",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "cov": "jest --coverage"
   },
   "author": "fnya",
   "license": "MIT",
