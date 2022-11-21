@@ -1,6 +1,7 @@
 const PropertyType = {
   AdminFolerId: 'AdminFolerId',
   AuthVersion: 'AuthVersion',
+  Initialized: 'Initialized',
   LogFolerId: 'LogFolerId',
   MembersFolerId: 'MembersFolerId',
   Pepper: 'Pepper',

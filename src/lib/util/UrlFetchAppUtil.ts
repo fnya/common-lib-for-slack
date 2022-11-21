@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { GoogleDrive } from './GoogleDrive';
 import { injectable, inject } from 'inversify';
-import Types from '../types/types';
+import Types from '../types/Types';
 
 @injectable()
 export class UrlFetchAppUtil {
