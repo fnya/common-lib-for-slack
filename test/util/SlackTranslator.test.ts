@@ -8,7 +8,7 @@ import { Channel } from '../../src/lib/entity/Channel';
 import { Member } from '../../src/lib/entity/Member';
 import { MessageStatus } from '../../src/lib/entity/MessageStatus';
 import { ReplyStatus } from '../../src/lib/entity/ReplyStatus';
-import { when, instance, verify, mock } from 'ts-mockito';
+import { when, instance, mock } from 'ts-mockito';
 import { Message } from '../../src/lib/entity/Message';
 import { Reply } from '../../src/lib/entity/Reply';
 
