@@ -3,7 +3,7 @@ const PropertyType = {
   AuthVersion: 'AuthVersion',
   Initialized: 'Initialized',
   JwtSecret: 'JwtSecret',
-  LogFolerId: 'LogFolerId',
+  LogsFolerId: 'LogsFolerId',
   MembersFolerId: 'MembersFolerId',
   Pepper: 'Pepper',
   RefreshTokenEffectiveDays: 'RefreshTokenEffectiveDays',

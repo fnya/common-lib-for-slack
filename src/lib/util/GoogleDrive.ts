@@ -269,4 +269,17 @@ export class GoogleDrive {
 
     return DriveApp.createFolder(folderName).getId();
   }
+
+  /**
+   * ルートにフォルダがあればフォルダIDを返し、なければ作成してフォルダIDを返す
+   *
+   * @param folderName フォルダ名
+   */
+  public createFolderOrGetFolderIdInRoot(folderName: string): string {
+    if (this.existFolderInRoot(folderName)) {
+      return this.getFolderIdInRoot(folderName);
+    }
+
+    return this.createFolderInRoot(folderName);
+  }
 }
