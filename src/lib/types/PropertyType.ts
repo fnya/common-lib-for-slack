@@ -1,6 +1,7 @@
 const PropertyType = {
   AdminFolerId: 'AdminFolerId',
-  AuthVersion: 'AuthVersion',
+  AuthAlgorithmVersion: 'AuthAlgorithmVersion',
+  AuthDataVersion: 'AuthDataVersion',
   Initialized: 'Initialized',
   JwtIssuer: 'JwtIssuer',
   JwtSecret: 'JwtSecret',
