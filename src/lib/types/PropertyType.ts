@@ -2,6 +2,7 @@ const PropertyType = {
   AdminFolerId: 'AdminFolerId',
   AuthVersion: 'AuthVersion',
   Initialized: 'Initialized',
+  JwtIssuer: 'JwtIssuer',
   JwtSecret: 'JwtSecret',
   LogsFolerId: 'LogsFolerId',
   MembersFolerId: 'MembersFolerId',
