@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 import { describe, test, beforeEach, expect } from '@jest/globals';
-import { mock, instance, when, anything, deepEqual, verify } from 'ts-mockito';
-import { SlackApiClient } from '../../src/lib/util/SlackApiClient';
-import Types from '../../src/lib/types/Types';
-import { UrlFetchAppUtil } from '../../src/lib/util/UrlFetchAppUtil';
-import PropertyUtil from '../../src/lib/util/PropertyUtil';
-import PropertyType from '../../src/lib/types/PropertyType';
+import { mock, instance, when, deepEqual, verify } from 'ts-mockito';
 import { PermissionTypes } from '../../src/lib/types/PermissionTypes';
+import { SlackApiClient } from '../../src/lib/util/SlackApiClient';
+import { UrlFetchAppUtil } from '../../src/lib/util/UrlFetchAppUtil';
+import PropertyType from '../../src/lib/types/PropertyType';
+import PropertyUtil from '../../src/lib/util/PropertyUtil';
+import Types from '../../src/lib/types/Types';
 
 describe('SlackApiClient のテスト', () => {
   let container: Container;

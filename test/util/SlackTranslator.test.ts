@@ -1,16 +1,16 @@
 import 'reflect-metadata';
-import { Container } from 'inversify';
-import { describe, test, beforeEach, expect } from '@jest/globals';
-import Types from '../../src/lib/types/Types';
-import { DateUtil } from '../../src/lib/util/DateUtil';
-import { SlackTranslator } from '../../src/lib/util/SlackTranslator';
 import { Channel } from '../../src/lib/entity/Channel';
+import { Container } from 'inversify';
+import { DateUtil } from '../../src/lib/util/DateUtil';
+import { describe, test, beforeEach, expect } from '@jest/globals';
 import { Member } from '../../src/lib/entity/Member';
-import { MessageStatus } from '../../src/lib/entity/MessageStatus';
-import { ReplyStatus } from '../../src/lib/entity/ReplyStatus';
-import { when, instance, mock } from 'ts-mockito';
 import { Message } from '../../src/lib/entity/Message';
+import { MessageStatus } from '../../src/lib/entity/MessageStatus';
 import { Reply } from '../../src/lib/entity/Reply';
+import { ReplyStatus } from '../../src/lib/entity/ReplyStatus';
+import { SlackTranslator } from '../../src/lib/util/SlackTranslator';
+import { when, instance, mock } from 'ts-mockito';
+import Types from '../../src/lib/types/Types';
 
 describe('SlackTranslator のテスト', () => {
   let container: Container;

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
-import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 import { DateUtil } from '../../src/lib/util/DateUtil';
+import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 
 describe('DateUtil のテスト', () => {
   let dateUtil: DateUtil;

@@ -1,15 +1,15 @@
 import 'reflect-metadata';
+import { ChannelUtil } from '../../src/lib/util/ChannelUtil';
 import { Container } from 'inversify';
+import { DateUtil } from '../../src/lib/util/DateUtil';
 import { describe, test, beforeEach, expect } from '@jest/globals';
 import { mock, instance, when } from 'ts-mockito';
-import { ChannelUtil } from '../../src/lib/util/ChannelUtil';
-import Types from '../../src/lib/types/Types';
-import { DateUtil } from '../../src/lib/util/DateUtil';
 import { SlackTranslator } from '../../src/lib/util/SlackTranslator';
 import { SpreadSheetManager } from '../../src/lib/util/SpreadSheetManager';
-import PropertyUtil from '../../src/lib/util/PropertyUtil';
-import PropertyType from '../../src/lib/types/PropertyType';
 import { SpreadSheetType } from '../../src/lib/types/SpreadSheetType';
+import PropertyType from '../../src/lib/types/PropertyType';
+import PropertyUtil from '../../src/lib/util/PropertyUtil';
+import Types from '../../src/lib/types/Types';
 
 describe('ChannelUtil のテスト', () => {
   let container: Container;
