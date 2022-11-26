@@ -51,6 +51,17 @@ export class PropertyUtil {
 
     PropertiesService.getScriptProperties().setProperty(propertyType, value);
   }
+
+  /**
+   * Script Property 削除する
+   *
+   * @param propertyType PropertyType
+   */
+  public deleteProperty(propertyType: PropertyType): void {
+    if (this.exists(propertyType)) {
+      PropertiesService.getScriptProperties().deleteProperty(propertyType);
+    }
+  }
 }
 
 export default PropertyUtil;
