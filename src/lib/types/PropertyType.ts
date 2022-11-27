@@ -11,6 +11,7 @@ const PropertyType = {
   RefreshTokenEffectiveDays: 'RefreshTokenEffectiveDays',
   SlackApiToken: 'SlackApiToken',
   SlackFolerId: 'SlackFolerId',
+  SlackPermissions: 'SlackPermissions',
   StretchingCount: 'StretchingCount',
   SystemFolerId: 'SystemFolerId',
 } as const;
