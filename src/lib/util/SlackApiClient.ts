@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import { inject, injectable } from 'inversify';
-import { PermissionTypes } from '../types/PermissionTypes';
 import { SlackApiType } from '../types/SlackApiType';
 import { UrlFetchAppUtil } from './UrlFetchAppUtil';
 import PropertyType from '../types/PropertyType';
@@ -27,11 +26,11 @@ export class SlackApiClient {
   /**
    * チャンネル一覧を取得する
    *
+   * @param permissions Slackのパーミッション(カンマ区切りで指定)
    * @returns チャンネル一覧
    */
-  public getChannels(permissions: PermissionTypes[]): any[] {
-    const permission = permissions.join(',');
-    const options = { types: permission };
+  public getChannels(permissions: string): any[] {
+    const options = { types: permissions };
     return this.getSlackApiData(SlackApiType.Channels, options).channels;
   }
 

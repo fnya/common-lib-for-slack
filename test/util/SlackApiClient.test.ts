@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { describe, test, beforeEach, expect } from '@jest/globals';
 import { mock, instance, when, deepEqual, verify } from 'ts-mockito';
-import { PermissionTypes } from '../../src/lib/types/PermissionTypes';
 import { SlackApiClient } from '../../src/lib/util/SlackApiClient';
 import { UrlFetchAppUtil } from '../../src/lib/util/UrlFetchAppUtil';
 import PropertyType from '../../src/lib/types/PropertyType';
@@ -41,10 +40,7 @@ describe('SlackApiClient のテスト', () => {
   describe('getChannels のテスト', () => {
     test('チャンネル一覧を取得できること', () => {
       // 準備
-      const permissions = [
-        PermissionTypes.PublicChannel,
-        PermissionTypes.PrivateChannel,
-      ];
+      const permissions = 'public_channel,private_channel';
       const url =
         'https://slack.com/api/conversations.list?types=public_channel%2Cprivate_channel';
       const options = {
