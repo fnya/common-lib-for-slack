@@ -54,6 +54,16 @@ export class ChannelUtil {
         );
     }
 
+    // channels スプレッドシートがない場合は空のチャンネルID を返す
+    if (
+      this.spreadSheetManager.exists(
+        this.propertyUtil.getProperty(PropertyType.MembersFolerId),
+        SpreadSheetType.Channels
+      )
+    ) {
+      return '';
+    }
+
     // チャンネル一覧をロードする
     const arrayChannels = this.spreadSheetManager.load(
       this.propertyUtil.getProperty(PropertyType.MembersFolerId),
@@ -116,6 +126,16 @@ export class ChannelUtil {
 
       replyStatuses =
         this.slackTranslator.translateArraysToReplyStatus(arrayReplyStatuses);
+    }
+
+    // channels スプレッドシートがない場合は空のチャンネルID を返す
+    if (
+      this.spreadSheetManager.exists(
+        this.propertyUtil.getProperty(PropertyType.MembersFolerId),
+        SpreadSheetType.Channels
+      )
+    ) {
+      return '';
     }
 
     // チャンネル一覧をロードする
