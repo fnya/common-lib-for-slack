@@ -56,7 +56,7 @@ export class ChannelUtil {
 
     // channels スプレッドシートがない場合は空のチャンネルID を返す
     if (
-      this.spreadSheetManager.exists(
+      !this.spreadSheetManager.exists(
         this.propertyUtil.getProperty(PropertyType.MembersFolerId),
         SpreadSheetType.Channels
       )
@@ -130,7 +130,7 @@ export class ChannelUtil {
 
     // channels スプレッドシートがない場合は空のチャンネルID を返す
     if (
-      this.spreadSheetManager.exists(
+      !this.spreadSheetManager.exists(
         this.propertyUtil.getProperty(PropertyType.MembersFolerId),
         SpreadSheetType.Channels
       )

@@ -81,6 +81,15 @@ describe('ChannelUtil のテスト', () => {
       when(
         spreadSheetManagerMock.load('MembersFolerId', SpreadSheetType.Channels)
       ).thenReturn(arrayChannels);
+      when(
+        spreadSheetManagerMock.exists(
+          'MembersFolerId',
+          SpreadSheetType.Channels
+        )
+      ).thenReturn(true);
+      when(
+        spreadSheetManagerMock.exists('MembersFolerId', SpreadSheetType.Members)
+      ).thenReturn(true);
 
       // 実行
       const actual = channelUtil.getMessageTargetChannelId();
@@ -117,6 +126,12 @@ describe('ChannelUtil のテスト', () => {
     when(
       spreadSheetManagerMock.load('MembersFolerId', SpreadSheetType.Channels)
     ).thenReturn(arrayChannels);
+    when(
+      spreadSheetManagerMock.exists('MembersFolerId', SpreadSheetType.Channels)
+    ).thenReturn(true);
+    when(
+      spreadSheetManagerMock.exists('MembersFolerId', SpreadSheetType.Members)
+    ).thenReturn(true);
 
     // 実行
     const actual = channelUtil.getMessageTargetChannelId();
@@ -210,6 +225,15 @@ describe('ChannelUtil のテスト', () => {
       when(
         spreadSheetManagerMock.load('MembersFolerId', SpreadSheetType.Channels)
       ).thenReturn(arrayChannels);
+      when(
+        spreadSheetManagerMock.exists(
+          'MembersFolerId',
+          SpreadSheetType.Channels
+        )
+      ).thenReturn(true);
+      when(
+        spreadSheetManagerMock.exists('MembersFolerId', SpreadSheetType.Members)
+      ).thenReturn(true);
 
       // 実行
       const actual = channelUtil.getReplyTargetChannelId();
@@ -245,6 +269,15 @@ describe('ChannelUtil のテスト', () => {
       when(
         spreadSheetManagerMock.load('MembersFolerId', SpreadSheetType.Channels)
       ).thenReturn(arrayChannels);
+      when(
+        spreadSheetManagerMock.exists(
+          'MembersFolerId',
+          SpreadSheetType.Channels
+        )
+      ).thenReturn(true);
+      when(
+        spreadSheetManagerMock.exists('MembersFolerId', SpreadSheetType.Members)
+      ).thenReturn(true);
 
       // 実行
       const actual = channelUtil.getReplyTargetChannelId();
