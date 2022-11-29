@@ -76,6 +76,11 @@ export class SpreadSheetManager {
     const maxRow = activeSheet.getLastRow();
     const maxColumn = activeSheet.getLastColumn();
 
+    // シートにデータがない場合は空配列を返す
+    if (maxRow === 0 || maxColumn === 0) {
+      return [];
+    }
+
     // データの先頭が=の場合は'を先頭に追加しているので、'を除外するために
     // getValues() ではなく getDisplayValues() を使用している。
     return activeSheet.getRange(1, 1, maxRow, maxColumn).getDisplayValues();
