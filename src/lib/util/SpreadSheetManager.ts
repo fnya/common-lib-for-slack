@@ -1,14 +1,22 @@
 /* eslint-disable no-undef */
 import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
+import { SpreadSheetType } from '../types/SpreadSheetType';
 import Types from '../types/Types';
+import PropertyUtil from './PropertyUtil';
+import PropertyType from '../types/PropertyType';
 
 @injectable()
 export class SpreadSheetManager {
   private googleDrive: GoogleDrive;
+  private propertyUtl: PropertyUtil;
 
-  public constructor(@inject(Types.GoogleDrive) googleDrive: GoogleDrive) {
+  public constructor(
+    @inject(Types.GoogleDrive) googleDrive: GoogleDrive,
+    @inject(Types.PropertyUtil) propertyUtl: PropertyUtil
+  ) {
     this.googleDrive = googleDrive;
+    this.propertyUtl = propertyUtl;
   }
 
   /**
@@ -84,6 +92,47 @@ export class SpreadSheetManager {
     // データの先頭が=の場合は'を先頭に追加しているので、'を除外するために
     // getValues() ではなく getDisplayValues() を使用している。
     return activeSheet.getRange(1, 1, maxRow, maxColumn).getDisplayValues();
+  }
+
+  /**
+   * ユーザー一覧からユーザーIDを検索してユーザー情報を取得する
+   *
+   * @param userId ユーザーID
+   * @returns ユーザー情報
+   */
+  public searchUser(userId: string): string[] {
+    const adminFolderId = this.propertyUtl.getProperty(
+      PropertyType.AdminFolerId
+    );
+
+    const spreadSheet = this.getSpreadSheet(
+      adminFolderId,
+      SpreadSheetType.UserAccounts
+    );
+    const activeSheet = spreadSheet.getActiveSheet();
+    const targetRange = activeSheet.getRange(1, 1, activeSheet.getLastRow(), 1);
+    const textFinder = targetRange
+      .createTextFinder(userId)
+      .matchCase(true) // 大文字小文字を区別する
+      .matchEntireCell(true); // セル内全体一致
+
+    // 検索実行
+    const results = textFinder.findAll();
+
+    // 検索結果が0件、または2件以上の場合は空配列を返す
+    if (results.length !== 1) {
+      return [];
+    }
+
+    // 1行であっても2次元配列になってしまうため、index=0で1次元配列を取得する。
+    return activeSheet
+      .getRange(
+        results[0].getRow(),
+        1,
+        results[0].getRow(),
+        results[0].getLastColumn()
+      )
+      .getValues()[0];
   }
 
   /**
