@@ -124,13 +124,12 @@ export class SpreadSheetManager {
       return [];
     }
 
-    // 1行であっても2次元配列になってしまうため、index=0で1次元配列を取得する。
     return activeSheet
       .getRange(
         results[0].getRow(),
         1,
         results[0].getRow(),
-        results[0].getLastColumn()
+        activeSheet.getLastColumn()
       )
       .getValues()[0];
   }
