@@ -1,4 +1,5 @@
 const PropertyType = {
+  AccessTokenEffectiveMinutes: 'AccessTokenEffectiveMinutes',
   AdminFolerId: 'AdminFolerId',
   AuthAlgorithmVersion: 'AuthAlgorithmVersion',
   AuthDataVersion: 'AuthDataVersion',
