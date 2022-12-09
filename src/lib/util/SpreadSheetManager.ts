@@ -95,12 +95,13 @@ export class SpreadSheetManager {
   }
 
   /**
-   * ユーザー一覧からユーザーIDを検索してユーザー情報を取得する
+   * ユーザー一覧から key を検索してユーザー情報を取得する
    *
-   * @param userId ユーザーID
+   * @param column カラム番号(1始まり)
+   * @param key キー
    * @returns ユーザー情報
    */
-  public searchUser(userId: string): string[] {
+  public searchUser(column: number, key: string): string[] {
     const adminFolderId = this.propertyUtl.getProperty(
       PropertyType.AdminFolerId
     );
@@ -110,9 +111,14 @@ export class SpreadSheetManager {
       SpreadSheetType.UserAccounts
     );
     const activeSheet = spreadSheet.getActiveSheet();
-    const targetRange = activeSheet.getRange(1, 1, activeSheet.getLastRow(), 1);
+    const targetRange = activeSheet.getRange(
+      1,
+      column,
+      activeSheet.getLastRow(),
+      column
+    );
     const textFinder = targetRange
-      .createTextFinder(userId)
+      .createTextFinder(key)
       .matchCase(true) // 大文字小文字を区別する
       .matchEntireCell(true); // セル内全体一致
 
