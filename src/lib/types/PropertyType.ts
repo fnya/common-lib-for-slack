@@ -15,6 +15,7 @@ const PropertyType = {
   SlackPermissions: 'SlackPermissions',
   StretchingCount: 'StretchingCount',
   SystemFolerId: 'SystemFolerId',
+  UserTokenEffectiveMinutes: 'UserTokenEffectiveMinutes',
 } as const;
 
 // eslint-disable-next-line no-redeclare
