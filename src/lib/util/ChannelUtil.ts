@@ -29,7 +29,7 @@ export class ChannelUtil {
   }
 
   /**
-   * membersのターゲットとなるチャンネルIDを取得する
+   * messagesのターゲットとなるチャンネルIDを取得する
    *
    * @returns チャンネルID
    */

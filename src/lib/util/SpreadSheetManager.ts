@@ -2,9 +2,9 @@
 import { GoogleDrive } from './GoogleDrive';
 import { inject, injectable } from 'inversify';
 import { SpreadSheetType } from '../types/SpreadSheetType';
-import Types from '../types/Types';
-import PropertyUtil from './PropertyUtil';
 import PropertyType from '../types/PropertyType';
+import PropertyUtil from './PropertyUtil';
+import Types from '../types/Types';
 
 @injectable()
 export class SpreadSheetManager {
@@ -92,6 +92,41 @@ export class SpreadSheetManager {
     // データの先頭が=の場合は'を先頭に追加しているので、'を除外するために
     // getValues() ではなく getDisplayValues() を使用している。
     return activeSheet.getRange(1, 1, maxRow, maxColumn).getDisplayValues();
+  }
+
+  /**
+   * メッセージ一覧を取得する
+   *
+   * @param maxRecord 最大件数
+   * @param channelId チャンネル ID
+   * @param ts ts
+   * @returns メッセージ一覧
+   */
+  public loadMessages(
+    maxRecord: number,
+    channelId: string,
+    ts?: string
+  ): string[][] {
+    const membersFolerId = this.propertyUtl.getProperty(
+      PropertyType.MembersFolerId
+    );
+
+    const channelFolderId = this.googleDrive.getFolderId(
+      membersFolerId,
+      channelId
+    );
+
+    const spreadSheet = this.getSpreadSheet(
+      channelFolderId,
+      SpreadSheetType.Messages
+    );
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    if (!ts) {
+      return this.loadMessagesWithoutTs(activeSheet, maxRecord);
+    }
+
+    return this.loadMessagesWithTs(activeSheet, maxRecord, ts);
   }
 
   /**
@@ -280,5 +315,122 @@ export class SpreadSheetManager {
     }
 
     return myArrays;
+  }
+
+  /**
+   * メッセージ一覧をtsをキーに取得する
+   *
+   * @param activeSheet アクティブシート
+   * @param maxRecord 最大件数
+   * @param ts ts
+   * @returns メッセージ一覧
+   */
+  private loadMessagesWithTs(
+    activeSheet: GoogleAppsScript.Spreadsheet.Sheet,
+    maxRecord: number,
+    ts: string
+  ): string[][] {
+    const targetRange = activeSheet.getRange(1, 1, activeSheet.getLastRow(), 1);
+
+    const textFinder = targetRange
+      .createTextFinder(ts!)
+      .matchCase(true) // 大文字小文字を区別する
+      .matchEntireCell(true); // セル内全体一致
+
+    // 検索実行
+    const results = textFinder.findAll();
+
+    // 検索結果が1件以外の場合は空配列を返す
+    if (results.length !== 1) {
+      return [];
+    }
+
+    const targetRow = results[0].getRow();
+    let startRow = targetRow - maxRecord + 1;
+    if (startRow < 1) {
+      startRow = 1;
+    }
+    const lastRow = targetRow - 1;
+    if (lastRow < 1) {
+      return [];
+    }
+
+    const records = activeSheet
+      .getRange(startRow, 1, lastRow, activeSheet.getLastColumn())
+      .getValues();
+
+    const arrays: string[][] = [];
+
+    for (const record of records) {
+      const array: string[] = [];
+
+      for (const value of record) {
+        array.push(this.removeSingleQuote(value));
+      }
+
+      arrays.push(array);
+    }
+
+    return arrays;
+  }
+
+  /**
+   * メッセージ一覧を取得する
+   *
+   * @param activeSheet アクティブシート
+   * @param maxRecord 最大件数
+   * @returns メッセージ一覧
+   */
+  private loadMessagesWithoutTs(
+    activeSheet: GoogleAppsScript.Spreadsheet.Sheet,
+    maxRecord: number
+  ): string[][] {
+    const lastRow = activeSheet.getLastRow();
+
+    if (lastRow === 0) {
+      return [];
+    }
+
+    let startRow = lastRow - maxRecord + 1;
+    if (startRow < 1) {
+      startRow = 1;
+    }
+
+    const results = activeSheet.getRange(
+      startRow,
+      1,
+      lastRow,
+      activeSheet.getLastColumn()
+    );
+
+    const records = results.getValues();
+    const arrays: string[][] = [];
+
+    for (const record of records) {
+      const array: string[] = [];
+
+      for (const value of record) {
+        array.push(this.removeSingleQuote(value));
+      }
+
+      arrays.push(array);
+    }
+
+    return arrays;
+  }
+
+  /**
+   * 先頭に '= があったら ' を削除する
+   *
+   * @param value 値
+   * @returns ' 削除後の値
+   */
+  private removeSingleQuote(value: any): string {
+    const target = String(value);
+    if (target[0] === "'" && target[1] === '=') {
+      return target.substring(1);
+    }
+
+    return target;
   }
 }
