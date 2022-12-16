@@ -111,8 +111,13 @@ export class SpreadSheetManager {
       PropertyType.MembersFolerId
     );
 
-    const channelFolderId = this.googleDrive.getFolderId(
+    const messagesFolderId = this.googleDrive.getFolderId(
       membersFolerId,
+      'messages'
+    );
+
+    const channelFolderId = this.googleDrive.getFolderId(
+      messagesFolderId,
       channelId
     );
 
