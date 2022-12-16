@@ -351,11 +351,11 @@ export class SpreadSheetManager {
     }
 
     const targetRow = results[0].getRow();
-    let startRow = targetRow - maxRecord + 1;
+    let startRow = targetRow - maxRecord;
     if (startRow < 1) {
       startRow = 1;
     }
-    const lastRow = targetRow - 1;
+    const lastRow = targetRow - startRow;
     if (lastRow < 1) {
       return [];
     }
@@ -400,11 +400,12 @@ export class SpreadSheetManager {
     if (startRow < 1) {
       startRow = 1;
     }
+    const finalRow = lastRow - startRow;
 
     const results = activeSheet.getRange(
       startRow,
       1,
-      lastRow,
+      finalRow,
       activeSheet.getLastColumn()
     );
 
