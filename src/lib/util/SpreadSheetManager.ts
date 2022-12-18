@@ -338,7 +338,7 @@ export class SpreadSheetManager {
     const targetRange = activeSheet.getRange(1, 1, activeSheet.getLastRow(), 1);
 
     const textFinder = targetRange
-      .createTextFinder(ts!)
+      .createTextFinder(ts)
       .matchCase(true) // 大文字小文字を区別する
       .matchEntireCell(true); // セル内全体一致
 
@@ -400,7 +400,7 @@ export class SpreadSheetManager {
     if (startRow < 1) {
       startRow = 1;
     }
-    const finalRow = lastRow - startRow;
+    const finalRow = lastRow - startRow + 1;
 
     const results = activeSheet.getRange(
       startRow,
