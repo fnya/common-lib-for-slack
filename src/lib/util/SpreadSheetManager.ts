@@ -135,6 +135,66 @@ export class SpreadSheetManager {
   }
 
   /**
+   * リプライ一覧を取得する
+   *
+   * @param channelId チャンネル ID
+   * @param parentTs 親スレッドの ts
+   * @returns リプライ一覧
+   */
+  public loadReplies(channelId: string, parentTs: string): string[][] {
+    const membersFolerId = this.propertyUtl.getProperty(
+      PropertyType.MembersFolerId
+    );
+
+    const messagesFolderId = this.googleDrive.getFolderId(
+      membersFolerId,
+      'messages'
+    );
+
+    const channelFolderId = this.googleDrive.getFolderId(
+      messagesFolderId,
+      channelId
+    );
+
+    const spreadSheet = this.getSpreadSheet(
+      channelFolderId,
+      SpreadSheetType.Replies
+    );
+    const activeSheet = spreadSheet.getActiveSheet();
+
+    // 親スレッドの ts は6カラム目にある
+    const targetRange = activeSheet.getRange(1, 6, activeSheet.getLastRow(), 6);
+
+    const textFinder = targetRange
+      .createTextFinder(parentTs)
+      .matchCase(true) // 大文字小文字を区別する
+      .matchEntireCell(true); // セル内全体一致
+
+    // 検索実行/一致する全てのセルを返す
+    const results = textFinder.findAll();
+
+    // 検索結果が0件の場合は空配列を返す
+    if (results.length === 0) {
+      return [];
+    }
+
+    // 検索結果を格納して返す
+    const arrays: string[][] = [];
+
+    for (const result of results) {
+      const resultRange = activeSheet.getRange(
+        result.getRow(),
+        1,
+        1,
+        activeSheet.getLastColumn()
+      );
+      arrays.push(resultRange.getValues()[0]);
+    }
+
+    return arrays;
+  }
+
+  /**
    * ユーザー一覧から key を検索してユーザー情報を取得する
    *
    * @param column カラム番号(1始まり)
