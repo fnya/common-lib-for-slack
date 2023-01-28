@@ -364,6 +364,10 @@ export class SpreadSheetManager {
    * @returns 2次元配列
    */
   private addSingleQuoteToArrays(arrays: string[][]): string[][] {
+    if (!arrays) {
+      return [];
+    }
+
     const myArrays: string[][] = [];
 
     for (const array of arrays) {
