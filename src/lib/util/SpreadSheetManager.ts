@@ -374,7 +374,9 @@ export class SpreadSheetManager {
       const mySubArrays: string[] = [];
 
       for (const subArray of array) {
-        if (subArray[0] === '=') {
+        if (!subArray[0]) {
+          mySubArrays.push('');
+        } else if (subArray[0] === '=') {
           mySubArrays.push("'" + subArray);
         } else {
           mySubArrays.push(subArray);
