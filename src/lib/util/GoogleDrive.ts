@@ -235,6 +235,23 @@ export class GoogleDrive {
   }
 
   /**
+   * ルートフォルダの配下にファイル名が存在するか
+   *
+   * @param fileName ファイル名
+   * @returns true: 存在する/false: 存在しない
+   */
+  public existFileInRoot(fileName: string): boolean {
+    const it = DriveApp.getFilesByName(fileName);
+
+    if (it.hasNext()) {
+      // 既に存在していた場合
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * ルート配下のフォルダIDを取得する
    *
    * @param folderName フォルダ名
@@ -251,6 +268,43 @@ export class GoogleDrive {
     throw new Error(
       `指定したフォルダはルートに存在しません。 フォルダ名:${folderName}`
     );
+  }
+
+  /**
+   * ルート配下のファイルを取得する
+   *
+   * @param fileName ファイル名
+   * @returns ファイル
+   */
+  public getFileInRoot(fileName: string): GoogleAppsScript.Drive.File {
+    const it = DriveApp.getFilesByName(fileName);
+
+    if (it.hasNext()) {
+      // 既に存在していた場合
+      return it.next();
+    }
+
+    throw new Error(
+      `指定したフォルダはルートに存在しません。 ファイル名:${fileName}`
+    );
+  }
+
+  /**
+   * Blobを取得して返す
+   *
+   * @param folderId フォルダID
+   * @param fileName ファイル名
+   * @returns Blob
+   */
+  public getBlob(fileName: string): Blob {
+    // ファイルが存在しない場合はエラー
+    if (!this.existFileInRoot(fileName)) {
+      throw new Error(`指定したファイルは存在しません。ファイル名:${fileName}`);
+    }
+
+    const file = this.getFileInRoot(fileName);
+
+    return file.getBlob() as unknown as Blob;
   }
 
   /**
