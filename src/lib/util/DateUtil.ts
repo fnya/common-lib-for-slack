@@ -62,7 +62,7 @@ export class DateUtil {
    *
    * @returns 現在年月日の数値(yyyyMMdd)
    */
-  public getCurrentDateNumber(): Number {
+  public getCurrentDateNumber(): number {
     const date = new Date();
     return Number(
       date.getFullYear() +
